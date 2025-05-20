@@ -2,8 +2,6 @@ const express = require("express");
 
 const router = express.Router();
 const transferApplcaitions = require("../../controllers/admin/transferApplcaitionsController");
-const transferProcessController = require("../../controllers/admin/transferProcessController");
-const findReplacementController = require("../../controllers/admin/findReplacementController");
 
 // Get Routes
 router.get("/notApplied-users", transferApplcaitions.getNotAppliedUsers);
@@ -20,11 +18,5 @@ router.put("/recommend-application/:id", transferApplcaitions.recommendTransferA
 router.put("/approve-application/:id", transferApplcaitions.approveTransferApplication);
 router.put("/reject-application/:id", transferApplcaitions.rejectTransferApplication);
 router.put("/remove-application/:id", transferApplcaitions.removeTransferApplication);
-
-
-// Transfer logic Routes
-router.put("/transfer-application/process/:userId", transferProcessController.transferProcess);
-router.put("/transfer-application/find/:userId", findReplacementController.findReplacement);
-router.put("/transfer-application/publish/:userId", transferProcessController.publishApplication);
 
 module.exports = router;

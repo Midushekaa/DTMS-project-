@@ -30,8 +30,8 @@ const UserSchema = new mongoose.Schema(
     resident_type: { type: String, default: null },
     wop_number: { type: String, default: null },
     civil_status: { type: String, default: null },
-    GPS_longitude: { type: String, default: null },
     GPS_latitude: { type: String, default: null },
+    GPS_longitude: { type: String, default: null },
 
     progressValue: { type: Number, default: 15 }, // isSubmited status
     isUpdated: { type: Boolean, default: false }, // isUpdated status

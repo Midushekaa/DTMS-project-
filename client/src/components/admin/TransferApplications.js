@@ -344,24 +344,24 @@ const TransferApplications = ({ record }) => {
       title: "Score",
       dataIndex: "score",
       key: "score",
-      render: (text, record) => {
-        if (!text || !text.totalScore) return "N/A";
-        return (
-          <button
-            style={{
-              background: "none",
-              border: "none",
-              color: "#1890ff",
-              cursor: "pointer",
-              padding: 0,
-              textDecoration: "underline",
-            }}
-            onClick={() => showScoreModal(text, record._id)}
-          >
-            {text.totalScore}
-          </button>
-        );
-      },
+      // render: (text, record) => {
+      //   if (!text || !text.totalScore) return "N/A";
+      //   return (
+      //     <button
+      //       style={{
+      //         background: "none",
+      //         border: "none",
+      //         color: "#1890ff",
+      //         cursor: "pointer",
+      //         padding: 0,
+      //         textDecoration: "underline",
+      //       }}
+      //       onClick={() => showScoreModal(text, record._id)}
+      //     >
+      //       {text.totalScore}
+      //     </button>
+      //   );
+      // },
     },
     {
       title: "Transfer Decision",
