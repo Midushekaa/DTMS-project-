@@ -177,7 +177,7 @@ export default function MyApplications() {
                       <Text strong>
                         <FileTextOutlined className="mr-1 text-blue-500" />
                         Transfer Decision:
-                      </Text>{" "}
+                      </Text>
                       <Tag
                         icon={
                           app.transferDecision ? (
@@ -188,7 +188,7 @@ export default function MyApplications() {
                         }
                         color={app.transferDecision ? "blue" : "default"}
                       >
-                        {app.transferDecision || "Not decided yet"}
+                        {app.transferDecision}
                       </Tag>
                     </Col>
 

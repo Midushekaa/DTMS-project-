@@ -9,14 +9,14 @@ const {
   loginUser,
 } = require("../../controllers/user/auth/authController"); // Added loginUser
 const { validateLogin } = require("../../middleware/user/validateLogin");
-const { loginRateLimiter } = require("../../middleware/user/rateLimiter");
+const { rateLimiter } = require("../../middleware/rateLimiter");
 const {
   changePassword,
 } = require("../../controllers/user/auth/changePassword");
 const { resetPassword } = require("../../controllers/user/auth//resetPassword");
 
-router.post("/register", validateRegistration, registerUser);
-router.post("/login", loginRateLimiter, validateLogin, loginUser); // Added loginUser here
+router.post("/register", rateLimiter, validateRegistration, registerUser);
+router.post("/login", rateLimiter, validateLogin, loginUser); // Added loginUser here
 
 
 router.put("/change-password/:id", changePassword);
