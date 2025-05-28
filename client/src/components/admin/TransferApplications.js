@@ -207,9 +207,7 @@ const TransferApplications = ({ record }) => {
           placement: "topRight",
         });
       }
-      // setInterval(function () {
-      //   window.location.reload();
-      // }, 2000);
+      setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       console.error(error.response?.data?.error || "Something went wrong");
       notification.warning({
@@ -235,7 +233,7 @@ const TransferApplications = ({ record }) => {
             }
           );
           message.success(response.data.message || "Updated successfully");
-          setTimeout(() => window.location.reload(), 2000);
+          setTimeout(() => window.location.reload(), 1000);
         } catch (error) {
           console.error(error.response?.data?.error || "Failed to update");
           message.error(error.response?.data?.error || "Failed to update");
@@ -396,6 +394,7 @@ const TransferApplications = ({ record }) => {
             onChange={(value) => updateTransferredWorkplace(record._id, value)}
             style={{ width: 260 }}
             dropdownStyle={{ width: 400 }}
+            disabled={record?.isPublished}
           >
             {workplaceData.map((wp) => (
               <Select.Option key={wp._id} value={wp._id}>

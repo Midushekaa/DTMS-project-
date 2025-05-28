@@ -188,7 +188,7 @@ export default function MyApplications() {
                         }
                         color={app.transferDecision ? "blue" : "default"}
                       >
-                        {app.transferDecision || "Not decided yet"}
+                        {app.transferDecision}
                       </Tag>
                     </Col>
 

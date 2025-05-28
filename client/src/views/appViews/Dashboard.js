@@ -118,7 +118,7 @@ const Dashboard = () => {
                 {user?.NIC || "-"}
               </Descriptions.Item>
               <Descriptions.Item label="Designation">
-                {user?.designation || "-"}
+                {user?.designation || "Not updated yet"}
               </Descriptions.Item>
               <Descriptions.Item label="Workplace">
                 {workplaceName || "Unknown"}
