@@ -60,11 +60,14 @@ const AdminLogin = () => {
         setError("Invalid response from server.");
       }
     } catch (err) {
-      if (err.response && err.response.data) {
-        const errorMessage = err.response.data.message;
-        setError(errorMessage || "Login failed. Please try again.");
+      console.error("Error during login:", err);
+      const errors = err.response?.data?.errors;
+      if (Array.isArray(errors)) {
+        errors.forEach((error) => message.error(error));
       } else {
-        setError("Server error. Please try again later.");
+        const errorMessage =
+          err.response?.data?.error || "Login failed. Please try again.";
+        message.error(errorMessage);
       }
     } finally {
       setLoading(false);
@@ -96,14 +99,18 @@ const AdminLogin = () => {
         <Form
           layout="vertical"
           onFinish={handleLogin}
-          initialValues={{ adminId : 'S5371V' , securePassword : '259227'}}
+          initialValues={{ adminId: "S5371V", securePassword: "259227" }}
         >
           <Form.Item
             label="Admin ID"
             name="adminId"
             rules={[{ required: true, message: "Please enter your Admin ID" }]}
           >
-            <Input value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="Enter your admin id" />
+            <Input
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              placeholder="Enter your admin id"
+            />
           </Form.Item>
 
           <Form.Item
@@ -114,7 +121,10 @@ const AdminLogin = () => {
               { min: 4, message: "Password must be at least 4 characters!" },
             ]}
           >
-            <Input.Password className="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter your passowrd"/>
+            <Input.Password
+              className="w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Enter your passowrd"
+            />
           </Form.Item>
 
           <Button type="primary" htmlType="submit" block loading={loading}>

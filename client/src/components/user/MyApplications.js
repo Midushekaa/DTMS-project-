@@ -177,7 +177,7 @@ export default function MyApplications() {
                       <Text strong>
                         <FileTextOutlined className="mr-1 text-blue-500" />
                         Transfer Decision:
-                      </Text>{" "}
+                      </Text>
                       <Tag
                         icon={
                           app.transferDecision ? (

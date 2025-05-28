@@ -1,6 +1,8 @@
 import React from "react";
 import userImage from "../assets/images/user.jpg"; 
-import myImage from "../assets/images/Official Profile.png"; 
+import Nousad from "../assets/images/Official Profile.png"; 
+import Nuzla from "../assets/images/nusla.jpg"; 
+import Midu from "../assets/images/Midu.jpg"; 
 
 const About = () => {
   return (
@@ -36,7 +38,7 @@ const About = () => {
     Team Lead
   </div>
   <img
-    src={myImage}
+    src={Nousad}
     alt="NM Nousad"
     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-gray-300"
   />
@@ -56,12 +58,12 @@ const About = () => {
             {/* Developer 2 */}
             <div className="bg-white p-6 rounded-lg  border border-gray-100">
               <img
-                src={userImage}
-                alt="Nuzla Razzom"
+                src={Nuzla}
+                alt="Nuzla Razool"
                 className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-gray-300"
               />
               <h3 className="text-xl font-bold text-center text-gray-900">
-                👩‍💻 Nuzla Razzom
+                👩‍💻 Nuzla Razool
               </h3>
               <p className="text-center text-sm text-gray-600 mb-2">
                 Front-End Developer
@@ -75,18 +77,18 @@ const About = () => {
             {/* Developer 3 */}
             <div className="bg-white p-6 rounded-lg  border border-gray-100">
               <img
-                src={userImage}
-                alt="Midusheka Kuntrukumaren"
+                src={Midu}
+                alt="Midushekaa Kunrakumaren"
                 className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-gray-300"
               />
               <h3 className="text-xl font-bold text-center text-gray-900">
-                👩‍💻 Midusheka Kuntrukumaren
+                👩‍💻 Midushekaa Kunrakumaren
               </h3>
               <p className="text-center text-sm text-gray-600 mb-2">
                 Front-End Developer
               </p>
               <p className="text-gray-600 text-sm text-justify">
-                Focused on dynamic component design, smooth interactions, and visual consistency across devices.
+                Specializes in dynamic component design, smooth interactions, and visual consistency across devices.
                 Brings precision and usability to every front-end screen using React.js and Tailwind.
               </p>
             </div>
