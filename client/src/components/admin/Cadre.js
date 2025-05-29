@@ -71,11 +71,11 @@ const Cadre = () => {
         workplace_id: workplaceId, // Ensure workplaceId exists
       };
 
-      await axios.put(
+      const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/admin/cadre/${editingcadre._id}`, // Corrected variable name
         updatedValues
       );
-      message.success("Cadre updated successfully!");
+      message.success(response.data.message || "Cadre updated successfully!");
       fetchcadre(); // Refresh the data
       setIsModalVisible(false);
       setEditingcadre(null);
@@ -156,7 +156,7 @@ const Cadre = () => {
         ]);
 
         form.resetFields();
-        message.success("cadre added successfully!");
+        message.success(response.data.message || "Cadre added successfully!");
       } else {
         throw new Error("Unexpected response from server.");
       }

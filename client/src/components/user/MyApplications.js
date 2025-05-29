@@ -111,11 +111,18 @@ export default function MyApplications() {
 
   // Check if there's an application with isProcessed: false and isPublished: false
   const highlightedApp = sortedApplications.find(
-    (app) => app.isProcessed === false && app.isPublished === false
+    (app) => app.isSubmited && !app.isApproved && !app.isProcessed
+  );
+
+  const highlightedApp2 = sortedApplications.find(
+    (app) => app.isSubmited && app.isApproved && !app.isProcessed
   );
 
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedApps = sortedApplications.slice(startIndex, startIndex + pageSize);
+  const paginatedApps = sortedApplications.slice(
+    startIndex,
+    startIndex + pageSize
+  );
 
   return (
     <div className="flex flex-col items-center min-h-screen p-6 overflow-hidden">
@@ -132,6 +139,12 @@ export default function MyApplications() {
           <>
             {/* If there's an application with isProcessed: false and isPublished: false, show the message */}
             {highlightedApp && (
+              <Text type="success" className="block mb-4">
+                You have submitted a transfer application successfully. Wait for
+                the approval.
+              </Text>
+            )}
+            {highlightedApp2 && (
               <Text type="success" className="block mb-4">
                 Your application has been approved. Wait for transfer decision.
               </Text>
@@ -150,7 +163,8 @@ export default function MyApplications() {
                 getWorkplaceName(app.transfered_workplace_id) || "Pending";
 
               // Skip rendering the application with isProcessed: false and isPublished: false
-              if (app.isProcessed === false && app.isPublished === false) return null;
+              if (app.isProcessed === false && app.isPublished === false)
+                return null;
 
               return (
                 <Card
@@ -180,24 +194,37 @@ export default function MyApplications() {
                       </Text>
                       <Tag
                         icon={
-                          app.transferDecision ? (
+                          app.isPublished && app.transferDecision ? (
                             <CheckCircleTwoTone twoToneColor="#1890ff" />
                           ) : (
                             <ClockCircleTwoTone />
                           )
                         }
-                        color={app.transferDecision ? "blue" : "default"}
+                        color={
+                          app.isPublished && app.transferDecision
+                            ? "blue"
+                            : "default"
+                        }
                       >
-                        {app.transferDecision}
+                        {(app.isPublished && app.transferDecision) ||
+                          " Pending"}
                       </Tag>
                     </Col>
 
                     <Col span={12}>
-                      <Text strong>
-                        <EnvironmentTwoTone className="mr-1" />
-                        Transferred Workplace:
-                      </Text>
-                      <Tag>{transferred}</Tag>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <Text strong>
+                          <EnvironmentTwoTone className="mr-1" />
+                          Transferred Workplace:
+                        </Text>
+                        <Tag>{transferred}</Tag>
+                      </div>
                     </Col>
                   </Row>
 

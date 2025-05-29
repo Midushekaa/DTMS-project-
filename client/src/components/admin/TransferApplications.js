@@ -17,6 +17,7 @@ import {
   UserSwitchOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 // Render Status function with debugging logs
 const renderStatus = (application) => {
@@ -69,6 +70,7 @@ const renderStatus = (application) => {
 };
 
 const TransferApplications = ({ record }) => {
+  const navigate = useNavigate();
   const { adminData } = useCheckAdminAuth();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -76,6 +78,7 @@ const TransferApplications = ({ record }) => {
   const adminRole = adminData.adminRole || null;
 
   const [transferWindows, setTransferWindows] = useState([]);
+  const [cadres, setCadres] = useState([]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedScore, setSelectedScore] = useState(null);
@@ -106,6 +109,33 @@ const TransferApplications = ({ record }) => {
     };
 
     fetchTransferWindows();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+
+    if (!token || token.split(".").length !== 3) {
+      localStorage.removeItem("adminToken");
+      navigate("/admin_login");
+      return;
+    }
+    const fetchCadres = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/admin/cadre`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setCadres(response.data);
+      } catch (error) {
+        console.error("Error fetching transfer windows:", error);
+      }
+    };
+
+    fetchCadres();
   }, []);
 
   useEffect(() => {
@@ -178,45 +208,56 @@ const TransferApplications = ({ record }) => {
 
     return { yearsDifference, replacementStatus };
   };
+  const getCadreDetails = (workplaceId, designation) => {
+    const match = cadres.find(
+      (item) =>
+        item.workplace_id === workplaceId &&
+        item.service.toLowerCase() === designation.toLowerCase()
+    );
 
-  const update = async (id, actionType) => {
-    setLoading(true);
-    try {
-      await axios.put(
-        `${process.env.REACT_APP_API_URL}/admin/transfer-application/${actionType}/${id}`
-      );
-
-      if (actionType === "process") {
-        notification.success({
-          description: "Processed successfully",
-          placement: "topRight",
-        });
-      } else if (actionType === "find") {
-        notification.success({
-          description: "Replacement officer found successfully",
-          placement: "topRight",
-        });
-      } else if (actionType === "publish") {
-        notification.success({
-          description: "Transfer applicaiton published successfully",
-          placement: "topRight",
-        });
-      } else {
-        notification.error({
-          description: "Something went wrong . please try again later",
-          placement: "topRight",
-        });
-      }
-      setTimeout(() => window.location.reload(), 1000);
-    } catch (error) {
-      console.error(error.response?.data?.error || "Something went wrong");
-      notification.warning({
-        description: error.response?.data?.error || "Something went wrong",
-        placement: "topRight",
-      });
-    } finally {
-      setLoading(false);
+    if (match) {
+      const { approvedCadre, existingCadre } = match;
+      return { approvedCadre, existingCadre };
     }
+
+    message.warning("Cadre not found");
+    return null;
+  };
+  const update = async (id, actionType, workplaceId, designation) => {
+    const cadre = getCadreDetails(workplaceId, designation);
+    if (!cadre) return;
+
+    Modal.confirm({
+      title: "Confirm Publish",
+      content: `Approved Cadre: ${cadre.approvedCadre}, Existing Cadre: ${cadre.existingCadre}`,
+      onOk: async () => {
+        setLoading(true);
+        try {
+          await axios.put(
+            `${process.env.REACT_APP_API_URL}/admin/transfer-application/${actionType}/${id}`
+          );
+
+          let msg =
+            {
+              process: "Processed successfully",
+              find: "Replacement officer found successfully",
+              publish: "Transfer application published successfully",
+            }[actionType] || "Something went wrong. Please try again later";
+
+          notification.success({ description: msg, placement: "topRight" });
+        } catch (error) {
+          notification.warning({
+            description: error.response?.data?.error || "Something went wrong",
+            placement: "topRight",
+          });
+        } finally {
+          setLoading(false);
+        }
+      },
+      onCancel() {
+        message.info("Publish cancelled");
+      },
+    });
   };
 
   const updateTransferredWorkplace = (id, newWorkplaceId) => {
@@ -464,7 +505,14 @@ const TransferApplications = ({ record }) => {
                   <Button
                     type="default"
                     icon={<UploadOutlined />}
-                    onClick={() => update(record.userId._id, "publish")}
+                    onClick={() => {
+                      update(
+                        record.userId._id,
+                        "publish",
+                        record.workplace_id,
+                        record.userId.designation
+                      );
+                    }}
                     disabled={record.isPublished}
                   >
                     {record.isPublished ? "Published" : "Publish"}
