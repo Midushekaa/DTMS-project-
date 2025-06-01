@@ -289,9 +289,6 @@ const handleLocationClick = () => {
               <Option value="Office Employees’ Service">
                 Office Employees’ Service
               </Option>
-              <Option value="Office Employees’ Service">
-                Office Employees’ Service
-              </Option>
             </Select>
           </Form.Item>
           <Form.Item label="Class" name="class" style={{ flex: "1 1 48%" }}>
