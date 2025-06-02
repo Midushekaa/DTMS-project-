@@ -193,25 +193,24 @@ const handleLocationClick = () => {
             name="designation"
             style={{ flex: "1 1 48%" }}
           >
-            <Select placeholder="Select a cadre category">
-              <Option value="Divisional Secretary">Divisional Secretary</Option>
-              <Option value="Assistant Divisional Secretary">
-                Assistant Divisional Secretary
-              </Option>
-              <Option value="Accountant">Accountant</Option>
+            <Select placeholder="Select a designation">
+             
               <Option value="Engineer">Engineer</Option>
               <Option value="DP/DDP/ADP">DP/DDP/ADP</Option>
-              <Option value="Administrative Officer">
-                Administrative Officer
-              </Option>
-              <Option value="Administrative Grama Niladhari">
-                Administrative Grama Niladhari
-              </Option>
               <Option value="Development Officer (Public Administration)">
                 Development Officer (Public Administration)
               </Option>
               <Option value="Development Officer (Other)">
                 Development Officer (Other)
+              </Option>
+              <Option value="Development Officer (Development)">
+                Development Officer (Development)
+              </Option>
+               <Option value="Development Co-ordinator">
+                Development Co-ordinator
+              </Option>
+                <Option value="Development Assistant">
+                Development Assistant
               </Option>
               <Option value="Technical Officer">Technical Officer</Option>
               <Option value="Technical Assistant">Technical Assistant</Option>
@@ -223,7 +222,7 @@ const handleLocationClick = () => {
                 Information & Communication Technology Assistant
               </Option>
               <Option value="Grama Niladhari">Grama Niladhari</Option>
-              <Option value="Translator">Translator</Option>
+              <Option value="Translator">Translator ( Tamil - Sinhala )</Option>
               <Option value="Office Employment Service Officers">
                 Office Employment Service Officers
               </Option>
@@ -247,34 +246,17 @@ const handleLocationClick = () => {
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
           <Form.Item label="Service" name="service" style={{ flex: "1 1 48%" }}>
             <Select>
-              <Option value="Sri Lanka Administrative Service">
+            <Option value="Sri Lanka Administrative Service">
                 Sri Lanka Administrative Service
               </Option>
-              <Option
-                value="Sri Lanka Engineering Service"
-              >
-                Sri Lanka Engineering Service
-              </Option>
-              <Option value="Sri Lanka Accountants' Service">
-                Sri Lanka Accountants' Service
-              </Option>
-              <Option value="Sri Lanka Planning Service">
-                Sri Lanka Planning Service
-              </Option>
-              <Option value="Sri Lanka Scientific Service">
-                Sri Lanka Scientific Service
-              </Option>
-              <Option value="Sri Lanka Architectural Service">
-                Sri Lanka Architectural Service
+              <Option value="Sri Lanka Administrative Service">
+               Management Service officers
               </Option>
               <Option value="Sri Lanka Information & Communication Technology Service">
                 Sri Lanka Information & Communication Technology Service
               </Option>
               <Option value="Government Translators’ Service">
                 Government Translators’ Service
-              </Option>
-              <Option value="Sri Lanka Librarians’ Service">
-                Sri Lanka Librarians’ Service
               </Option>
               <Option value="Development Officers' Service">
                 Development Officers' Service
@@ -288,6 +270,12 @@ const handleLocationClick = () => {
               <Option value="Office Employees’ Service">
                 Office Employees’ Service
               </Option>
+               <Option value="Teachnical Officers' service">
+                Teachnical Officers' service
+              </Option>
+              <Option value="Teachnical Assistant' service">
+                Teachnical Assistant' service
+              </Option>
             </Select>
           </Form.Item>
           <Form.Item label="Class" name="class" style={{ flex: "1 1 48%" }}>

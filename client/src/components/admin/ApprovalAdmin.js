@@ -16,6 +16,9 @@ import {
 import axios from "axios";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import useCheckAdminAuth from "../../utils/checkAdminAuth";
+import getWorkplaces from "../../api/getWorkplaces";
+import getTransferWindows from "../../api/getTransferWindows";
+import RemoveButton from "./RemoveButton";
 
 export default function CheckingAdmin() {
   const navigate = useNavigate();
@@ -23,8 +26,8 @@ export default function CheckingAdmin() {
   const [RecommendedApplications, setRecommendedApplications] = useState([]);
   const [errorMessage, setErrorMessage] = useState(""); // ✅ renamed
   const [loading, setLoading] = useState(false);
-  const [workplaceData, setWorkplaceData] = useState([]);
-  const [transferWindows, setTransferWindows] = useState([]);
+  const { workplaces, fetchWorkplaces } = getWorkplaces();
+  const { transferWindows, fetchTransferWindows } = getTransferWindows();;
   const { adminData } = useCheckAdminAuth();
 
   const adminRole = adminData.adminRole || null;
@@ -43,42 +46,6 @@ export default function CheckingAdmin() {
       setRecommendedApplications,
       setErrorMessage
     );
-  }, []);
-
-  useEffect(() => {
-    const fetchTransferWindows = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/transfer-window`
-        );
-        setTransferWindows(response.data);
-      } catch (error) {
-        console.error("Error fetching transfer windows:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTransferWindows();
-  }, []);
-
-  useEffect(() => {
-    const fetchWorkplaces = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/workplace`
-        );
-        setWorkplaceData(response.data);
-      } catch (error) {
-        console.error("Error fetching workplaces:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWorkplaces();
   }, []);
 
   const calculateEligibility = (duty_assumed_date) => {
@@ -103,7 +70,14 @@ export default function CheckingAdmin() {
   };
 
   const updateReplacement = async (id, value) => {
+    setLoading(true);
     try {
+      const token = localStorage.getItem("adminToken");
+
+      if (!token) {
+        message.error("Unauthorized! Please log in again.");
+        return;
+      }
       await axios.put(
         `${process.env.REACT_APP_API_URL}/transfer-application/${id}`,
         { Replacement: value }
@@ -112,15 +86,20 @@ export default function CheckingAdmin() {
         description: "Replacement updated successfully",
         placement: "topRight",
       });
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      fetchRecommendedApplications(
+      token,
+      setRecommendedApplications,
+      setErrorMessage
+      );
     } catch (error) {
       console.error(error.response?.data?.error || "Something went wrong");
       notification.error({
         description: error.response?.data?.error || "Something went wrong",
         placement: "topRight",
       });
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -138,7 +117,7 @@ export default function CheckingAdmin() {
 
       const response = await axios.put(
         url,
-        {}, // empty body
+        {}, 
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -151,9 +130,11 @@ export default function CheckingAdmin() {
           description: response.data.message || `${actionType} done`,
           placement: "topRight",
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+      fetchRecommendedApplications(
+      token,
+      setRecommendedApplications,
+      setErrorMessage
+      );
       } else {
         message.error("Unexpected server response");
       }
@@ -206,7 +187,7 @@ export default function CheckingAdmin() {
       dataIndex: "workplace_id",
       key: "workplace_id",
       render: (workplace_id) => {
-        const workplace = workplaceData.find((wp) => wp._id === workplace_id);
+        const workplace = workplaces.find((wp) => wp._id === workplace_id);
         return workplace ? workplace.workplace : "Unknown";
       },
     },
@@ -227,13 +208,13 @@ export default function CheckingAdmin() {
       key: "preferWorkplace_1",
       render: (preferWorkplace_1, record) => {
         const workplace1 =
-          workplaceData.find((wp) => wp._id === preferWorkplace_1)?.workplace ||
+          workplaces.find((wp) => wp._id === preferWorkplace_1)?.workplace ||
           "Unknown";
         const workplace2 =
-          workplaceData.find((wp) => wp._id === record.preferWorkplace_2)
+          workplaces.find((wp) => wp._id === record.preferWorkplace_2)
             ?.workplace || "Unknown";
         const workplace3 =
-          workplaceData.find((wp) => wp._id === record.preferWorkplace_3)
+          workplaces.find((wp) => wp._id === record.preferWorkplace_3)
             ?.workplace || "Unknown";
 
         return (
@@ -309,6 +290,12 @@ export default function CheckingAdmin() {
           >
             Not approve
           </Button>
+          <RemoveButton
+            record={record}
+            fetchRecommendedApplications={fetchRecommendedApplications}
+            setRecommendedApplications={setRecommendedApplications}
+            setErrorMessage={setErrorMessage}
+          />
         </div>
       ),
     },

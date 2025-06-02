@@ -21,10 +21,6 @@ import { useNavigate } from "react-router-dom";
 
 // Render Status function with debugging logs
 const renderStatus = (application) => {
-  console.log("Rendering Status for:", application);
-  console.log("isChecked:", application?.isChecked);
-  console.log("isRecommended:", application?.isRecommended);
-  console.log("isApproved:", application?.isApproved);
 
   return (
     <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
@@ -96,97 +92,143 @@ const TransferApplications = ({ record }) => {
     setSelectedId(null);
   };
 
-  useEffect(() => {
-    const fetchTransferWindows = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/transfer-window`
-        );
-        setTransferWindows(response.data); // Now this is an array of windows
-      } catch (error) {
-        console.error("Error fetching transfer windows:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchTransferWindows = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/transfer-window`
+  //       );
+  //       setTransferWindows(response.data); // Now this is an array of windows
+  //     } catch (error) {
+  //       console.error("Error fetching transfer windows:", error);
+  //     }
+  //   };
 
-    fetchTransferWindows();
-  }, []);
+  //   fetchTransferWindows();
+  // }, []);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const token = localStorage.getItem("adminToken");
+
+  //   if (!token || token.split(".").length !== 3) {
+  //     localStorage.removeItem("adminToken");
+  //     navigate("/admin_login");
+  //     return;
+  //   }
+  //   const fetchCadres = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/admin/cadre`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+  //       setCadres(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching transfer windows:", error);
+  //     }
+  //   };
+
+  //   fetchCadres();
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchWorkplaces = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/workplace`
+  //       );
+  //       setWorkplaceData(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching workplaces:", error);
+  //     }
+  //   };
+
+  //   fetchWorkplaces();
+  // }, []);
+
+  // // Fetch the transfer applications data
+  // useEffect(() => {
+  //   const token = localStorage.getItem("adminToken");
+
+  //   if (!token) {
+  //     message.error("Unauthorized! Please log in as an admin.");
+  //     return;
+  //   }
+
+  //   const fetchApplications = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/admin/total-applications`,
+  //         { headers: { Authorization: `Bearer ${token}` } }
+  //       );
+
+  //       if (response.data && response.data.length > 0) {
+  //         setApplications(response.data);
+  //       } else {
+  //         message.info("No transfer applications found.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Fetch Error:", error.response?.data || error);
+  //       message.error(
+  //         error.response?.data?.error || "Something went wrong, try again later"
+  //       );
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchApplications();
+  // }, []);
+
+ const fetch = async () => {
     const token = localStorage.getItem("adminToken");
-
+    
     if (!token || token.split(".").length !== 3) {
       localStorage.removeItem("adminToken");
       navigate("/admin_login");
       return;
     }
-    const fetchCadres = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/admin/cadre`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCadres(response.data);
-      } catch (error) {
-        console.error("Error fetching transfer windows:", error);
+
+    setLoading(true);
+    try {
+      const [windows, cadres, workplaces, applications] = await Promise.all([
+        axios.get(`${process.env.REACT_APP_API_URL}/transfer-window`),
+        axios.get(`${process.env.REACT_APP_API_URL}/admin/cadre`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get(`${process.env.REACT_APP_API_URL}/workplace`),
+        axios.get(`${process.env.REACT_APP_API_URL}/admin/total-applications`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
+
+      setTransferWindows(windows.data);
+      setCadres(cadres.data);
+      setWorkplaceData(workplaces.data);
+      if (applications.data?.length) {
+        setApplications(applications.data);
+      } else {
+        message.info("No transfer applications found.");
       }
-    };
-
-    fetchCadres();
-  }, []);
-
-  useEffect(() => {
-    const fetchWorkplaces = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/workplace`
-        );
-        setWorkplaceData(response.data);
-      } catch (error) {
-        console.error("Error fetching workplaces:", error);
-      }
-    };
-
-    fetchWorkplaces();
-  }, []);
-
-  // Fetch the transfer applications data
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-
-    if (!token) {
-      message.error("Unauthorized! Please log in as an admin.");
-      return;
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      message.error(error.response?.data?.error || "Failed to load data");
+    } finally {
+      setLoading(false);
     }
+  };
+  
+  const fetchAllData = () => {
+  fetch();
+  }
 
-    const fetchApplications = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/admin/total-applications`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        if (response.data && response.data.length > 0) {
-          setApplications(response.data);
-        } else {
-          message.info("No transfer applications found.");
-        }
-      } catch (error) {
-        console.error("Fetch Error:", error.response?.data || error);
-        message.error(
-          error.response?.data?.error || "Something went wrong, try again later"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchApplications();
-  }, []);
+  useEffect(() => {
+  fetchAllData();
+}, []);
 
   const calculateEligibility = (duty_assumed_date) => {
     if (!duty_assumed_date)
@@ -212,7 +254,7 @@ const TransferApplications = ({ record }) => {
     const match = cadres.find(
       (item) =>
         item.workplace_id === workplaceId &&
-        item.designation.toLowerCase() === designation.toLowerCase()
+        item.designation === designation
     );
 
     if (match) {
@@ -223,42 +265,45 @@ const TransferApplications = ({ record }) => {
     message.warning("Cadre not found");
     return null;
   };
-  const update = async (id, actionType, workplaceId, designation) => {
-    const cadre = getCadreDetails(workplaceId, designation);
+
+const update = async (id, userId, actionType, workplaceId, designation) => {
+  let cadre;
+  if (actionType === "publish") {
+    cadre = getCadreDetails(workplaceId, designation);
     if (!cadre) return;
+  }
 
-    Modal.confirm({
-      title: "Confirm Publish",
-      content: `Approved Cadre: ${cadre.approvedCadre}, Existing Cadre: ${cadre.existingCadre}`,
-      onOk: async () => {
-        setLoading(true);
-        try {
-          await axios.put(
-            `${process.env.REACT_APP_API_URL}/admin/transfer-application/${actionType}/${id}`
-          );
-
-          let msg =
-            {
-              process: "Processed successfully",
-              find: "Replacement officer found successfully",
-              publish: "Transfer application published successfully",
-            }[actionType] || "Something went wrong. Please try again later";
-
-          notification.success({ description: msg, placement: "topRight" });
-        } catch (error) {
-          notification.warning({
-            description: error.response?.data?.error || "Something went wrong",
-            placement: "topRight",
-          });
-        } finally {
-          setLoading(false);
-        }
-      },
-      onCancel() {
-        message.info("Publish cancelled");
-      },
-    });
-  };
+  Modal.confirm({
+    title: actionType === "publish" ? "Confirm Publish" : "Confirm Action",
+    content: actionType === "publish" 
+      ? `Approved Cadre: ${cadre.approvedCadre}, Existing Cadre: ${cadre.existingCadre}` 
+      : "Are you sure you want to proceed?",
+    onOk: async () => {
+      setLoading(true);
+      try {
+        await axios.put(
+          `${process.env.REACT_APP_API_URL}/admin/transfer-application/${actionType}/${userId}`,
+           { id }  
+        );
+        const msg = {
+          process: "Processed successfully",
+          find: "Replacement officer found successfully",
+          publish: "Transfer application published successfully",
+        }[actionType] || "Action completed";
+        notification.success({ description: msg, placement: "topRight" });
+        fetchAllData();
+      } catch (error) {
+        notification.warning({
+          description: error.response?.data?.error || "Action failed",
+          placement: "topRight",
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    onCancel: () => message.info("Action cancelled"),
+  });
+};
 
   const updateTransferredWorkplace = (id, newWorkplaceId) => {
     Modal.confirm({
@@ -274,7 +319,7 @@ const TransferApplications = ({ record }) => {
             }
           );
           message.success(response.data.message || "Updated successfully");
-          setTimeout(() => window.location.reload(), 1000);
+          fetchAllData();
         } catch (error) {
           console.error(error.response?.data?.error || "Failed to update");
           message.error(error.response?.data?.error || "Failed to update");
@@ -404,14 +449,17 @@ const TransferApplications = ({ record }) => {
     },
     {
       title: "Transfer Decision",
-      dataIndex: "transferDesision",
-      key: "transferDesision",
+      dataIndex: "transferDecision",
+      key: "transferDecision",
+       render: (text) => {
+        return text && text.trim() !== "" ? text : "N/A";
+      },
     },
 
     {
       title: "Transfer Decision Type",
-      dataIndex: "transferDesisionType",
-      key: "transferDesisionType",
+      dataIndex: "transferDecisionType",
+      key: "transferDecisionType",
       render: (text) => {
         return text && text.trim() !== "" ? text : "N/A";
       },
@@ -474,7 +522,7 @@ const TransferApplications = ({ record }) => {
                   <Button
                     type="primary"
                     icon={<CheckCircleOutlined />}
-                    onClick={() => update(record.userId._id, "process")}
+                    onClick={() => update(record._id,record.userId._id, "process")}
                   >
                     Process
                   </Button>
@@ -495,7 +543,7 @@ const TransferApplications = ({ record }) => {
                     <Button
                       type="dashed"
                       icon={<UserSwitchOutlined />}
-                      onClick={() => update(record.userId._id, "find")}
+                      onClick={() => update(record._id,record.userId._id, "find")}
                     >
                       Find Replacement
                     </Button>
@@ -507,6 +555,7 @@ const TransferApplications = ({ record }) => {
                     icon={<UploadOutlined />}
                     onClick={() => {
                       update(
+                        record._id,
                         record.userId._id,
                         "publish",
                         record.workplace_id,

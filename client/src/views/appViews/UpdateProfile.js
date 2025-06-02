@@ -74,8 +74,8 @@ const UpdateProfile = () => {
         ),
       },
       {
-        key: "Dependence",
-        label: "Dependence",
+        key: "Dependency",
+        label: "Dependency",
         icon: user?.isDependenceSubmited ? (
           <CheckCircleOutlined style={{ color: "green" }} />
         ) : (
@@ -129,7 +129,7 @@ const UpdateProfile = () => {
         {currentSection === "WorkHistory" && <UserWorkHistory user={user} />}
         {currentSection === "LeaveDetails" && <LeaveDetails user={user} />}
         {currentSection === "Petitions" && <Petitions user={user} />}
-        {currentSection === "Dependence" && <UserDependence user={user} />}
+        {currentSection === "Dependency" && <UserDependence user={user} />}
         {currentSection === "Disease" && <UserDisease user={user} />}
         {currentSection === "MedicalCondition" && (
           <UserMedicalCondition user={user} />

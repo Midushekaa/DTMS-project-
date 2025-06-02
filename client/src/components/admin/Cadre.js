@@ -9,7 +9,7 @@ import {
   message,
   Spin,
   Modal,
-  Typography
+  Typography,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -52,9 +52,9 @@ const Cadre = () => {
   const handleUpdate = (record) => {
     setEditingcadre(record);
     form.setFieldsValue({
-      designation: record.designation, // Ensure this matches the form field name
-      approvedCadre: record.approvedCadre, // Ensure this matches the form field name
-      existingCadre: record.existingCadre, // Ensure this matches the form field name
+      designation: record.designation,
+      approvedCadre: record.approvedCadre, 
+      existingCadre: record.existingCadre, 
     });
     setIsModalVisible(true);
   };
@@ -68,15 +68,38 @@ const Cadre = () => {
 
       const updatedValues = {
         ...values,
-        workplace_id: workplaceId, // Ensure workplaceId exists
+        workplace_id: workplaceId, 
       };
 
       const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}/admin/cadre/${editingcadre._id}`, // Corrected variable name
+        `${process.env.REACT_APP_API_URL}/admin/cadre/${editingcadre._id}`, 
         updatedValues
       );
       message.success(response.data.message || "Cadre updated successfully!");
-      fetchcadre(); // Refresh the data
+      fetchcadre(); 
+      setIsModalVisible(false);
+      setEditingcadre(null);
+      form.resetFields();
+    } catch (error) {
+      console.error(
+        error.response?.data?.error ||
+          "Failed to update. Please try again later"
+      );
+      message.error(
+        error.response?.data?.error ||
+          "Failed to update. Please try again later"
+      );
+    }
+  };
+
+  
+  const handleDelete = async (id) => {
+    try {
+
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/admin/cadre/${id}` );
+      message.success(response.data.message || "Cadre updated successfully!");
+      fetchcadre(); 
       setIsModalVisible(false);
       setEditingcadre(null);
       form.resetFields();
@@ -105,10 +128,9 @@ const Cadre = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/admin/cadre`,
         {
-          headers: { Authorization: `Bearer ${token}` }, // Correctly pass headers as part of the config object
+          headers: { Authorization: `Bearer ${token}` }, 
         }
       );
-
       const formattedData = response.data.map((item) => ({
         key: item.id,
         ...item,
@@ -141,7 +163,7 @@ const Cadre = () => {
 
       const newcadre = {
         ...values,
-        workplace_id: workplaceId, // Ensure workplaceId exists
+        workplace_id: workplaceId,
       };
 
       const response = await axios.post(
@@ -173,7 +195,6 @@ const Cadre = () => {
   };
 
   useEffect(() => {
-    // Check if the user has an admin token
     const token = localStorage.getItem("adminToken");
 
     if (!token) {
@@ -181,17 +202,16 @@ const Cadre = () => {
       return;
     }
 
-    // Fetch total data
     axios
       .get(`${process.env.REACT_APP_API_URL}/admin/cadre`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
         if (data.length) {
-          setCadres(data); // Store users for further use if needed
-          setAllCafres(data); // Potentially reset or store all users if necessary
+          setCadres(data);
+          setAllCafres(data);
         } else {
-          message.error("No cadre found");
+          message.info("No cadre found");
         }
       })
       .catch((error) =>
@@ -231,7 +251,6 @@ const Cadre = () => {
         return formattedDate;
       },
     },
-  
   ];
 
   if (
@@ -264,9 +283,27 @@ const Cadre = () => {
           Update
         </Button>
       ),
+      
+    });
+  }
+  else{
+     columns.push({
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button
+          className="btn bg-red-500 text-white"
+          style={{ marginLeft: 8 }}
+          onClick={() => handleDelete(record._id)}
+        >
+          Delete
+        </Button>
+      ),
+      
     });
   }
 
+  
   if (loading)
     return (
       <div
@@ -308,14 +345,17 @@ const Cadre = () => {
                 <Option value="Development Officer (Public Administration)">
                   Development Officer (Public Administration)
                 </Option>
-                 <Option value="Development Officer (Other)">
-                  Development Assistant 
-                </Option>
-                 <Option value="Development Officer (Other)">
-                  Development Officer 
-                </Option>
                 <Option value="Development Officer (Other)">
+                  Development Officer (Other)
+                </Option>
+                <Option value="Development Officer (Development)">
                   Development Officer (Development)
+                </Option>
+                <Option value="Development Co-ordinator">
+                  Development Co-ordinator
+                </Option>
+                <Option value="Development Assistant">
+                  Development Assistant
                 </Option>
                 <Option value="Technical Officer">Technical Officer</Option>
                 <Option value="Technical Assistant">Technical Assistant</Option>
@@ -327,7 +367,9 @@ const Cadre = () => {
                   Information & Communication Technology Assistant
                 </Option>
                 <Option value="Grama Niladhari">Grama Niladhari</Option>
-                <Option value="Translator">Translator (Sinhala - Tamil)</Option>
+                <Option value="Translator">
+                  Translator ( Tamil - Sinhala )
+                </Option>
                 <Option value="Office Employment Service Officers">
                   Office Employment Service Officers
                 </Option>
@@ -415,7 +457,6 @@ const Cadre = () => {
         </Card>
       )}
 
-      {/* Modal for updating cadre */}
       <Modal
         title="Update Cadre"
         open={isModalVisible}
@@ -425,7 +466,7 @@ const Cadre = () => {
         {editingcadre && (
           <Form form={form} layout="vertical" onFinish={onUpdate}>
             <Form.Item name="designation" label="Cadre Category">
-              <Select placeholder="Select a cadre category" disabled>
+              <Select placeholder="Select a cadre category">
                 <Option value="Divisional Secretary">
                   Divisional Secretary
                 </Option>

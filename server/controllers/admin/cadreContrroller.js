@@ -2,7 +2,6 @@ const { check, validationResult } = require("express-validator");
 const Cadre = require("../../models/Cadre");
 const jwt = require("jsonwebtoken");
 
-// Validation Rules
 exports.validate = [
   check("designation").notEmpty().withMessage("Designation is required"),
   check("workplace_id").notEmpty().withMessage("Workplace id  is required"),
@@ -56,10 +55,9 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Get  Dependence using id
 exports.getUnique = async (req, res) => {
   try {
-    const cadre = await Cadre.findById(req.params.id); // Find by id passed in the request
+    const cadre = await Cadre.findById(req.params.id);
     if (!cadre) {
       return res.status(404).json({ error: "Cadre not found" });
     }
@@ -72,15 +70,26 @@ exports.getUnique = async (req, res) => {
 // Update Cadre
 exports.update = async (req, res) => {
   try {
+    if (req.body.designation) {
+      const existingCadre = await Cadre.findOne({
+        designation: req.body.designation,
+        _id: { $ne: req.params.id }, 
+      });
+
+      if (existingCadre) {
+        return res.status(400).json({ error: "Designation already exists" });
+      }
+    }
+
     const cadre = await Cadre.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    if (cadre.designation)
+      if (!cadre) {
+        return res.status(404).json({ error: "Record Not Found" });
+      }
 
-    if (!cadre) {
-      return res.status(404).json({ error: "Record Not Found" });
-    }
-
-    res.json({ message: "Update successful", data: cadre });
+    res.json({ message: "Successfully updated", data: cadre });
   } catch (err) {
     res.status(500).json({ error: "Update failed", details: err.message });
   }

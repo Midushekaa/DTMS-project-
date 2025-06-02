@@ -27,7 +27,6 @@ const TransferWindow = () => {
       setPastWindows(windows);
       setTransferWindows(windows);
 
-      // Find the active window (not terminated and closing date is in the future)
       const active = windows.find(
         (window) =>
           !window.isTerminated && new Date(window.closingDate) > new Date()
@@ -40,10 +39,16 @@ const TransferWindow = () => {
         setIsEnabled(false);
         setActiveWindow(null);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      message.error("Failed to fetch transfer windows.");
-    }
+    }  catch (error) {
+        console.info(
+          error.response?.data?.info ||
+          "Failed to fetch. Please try again later"
+        );
+        message.info(
+          error.response?.data?.info ||
+            "Failed to fetch. Please try again later"
+      );
+      }
   };
 
   useEffect(() => {
@@ -51,32 +56,38 @@ const TransferWindow = () => {
   }, []);
 
   const handleSave = async () => {
-    const { name, closingDate, applicationClosingDate } = form.getFieldsValue();
+  try {
+    await form.validateFields();
+    const values = form.getFieldsValue();
     const data = {
-      name,
-      closingDate,
-      applicationClosingDate,
+      name: values.name,
+      closingDate: values.closingDate,
+      applicationClosingDate: values.applicationClosingDate,
       status: "Open",
       isTerminated: false,
     };
 
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/transfer-window`,
-        data
-      );
-      message.success("Transfer window saved successfully.");
-      fetchTransferWindows();
-      form.resetFields();
-    } catch (error) {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/transfer-window`,
+      data
+    );
+    
+    message.success(response.message || "Transfer window saved successfully.");
+    fetchTransferWindows();
+    form.resetFields();
+  } catch (error) {
+    if (error.errorFields) {
+      message.error("Please fill all required fields!");
+    } else {
       message.error(
         error.response?.data?.error ||
-          error.response?.data?.errors[0]?.msg ||
-          "Failed to save transfer window details."
+        error.response?.data?.errors?.[0]?.msg ||
+        "Failed to save transfer window details."
       );
-      console.error("Error:", error);
     }
-  };
+    console.error("Error:", error);
+  }
+};
 
   const handleTerminate = async () => {
     if (activeWindow) {
@@ -141,7 +152,7 @@ const TransferWindow = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 gap-6 px-4 py-8">
+    <div className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 py-8">
       <Typography.Title level={3} className="mb-6">
         Transfer Window
       </Typography.Title>

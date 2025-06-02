@@ -51,22 +51,26 @@ const getNotAppliedUsers = async (req, res) => {
     const { workplace_id, adminRole } = decodedToken; // Extract workplace_id & adminRole
 
     const currentDate = new Date();
+
     const activeTransferWindow = await TransferWindow.findOne({
       closingDate: { $gte: currentDate },
-      applicationClosingDate: { $lte: currentDate },
+      applicationClosingDate: { $gte: currentDate },
     });
-
-    if (
-      activeTransferWindow &&
-      activeTransferWindow.applicationClosingDate > currentDate
-    ) {
-      return res.status(400).json({ error: "Application not closed yet" });
-    }
 
     if (!activeTransferWindow) {
       return res
         .status(400)
-        .json({ error: "Currently no transfer window active" });
+        .json({ error: "Currently, there is no transfer active transfer window"});
+    }
+
+    const transferWindow = await TransferWindow.findOne({
+      closingDate: { $gte: currentDate },
+      applicationClosingDate: { $lte: currentDate },
+    });
+
+
+    if (!transferWindow) {
+      return res.status(400).json({ info: "Application not closed yet" });
     }
 
     const filter =
@@ -267,15 +271,13 @@ const approveTransferApplication = async (req, res) => {
       return res.status(404).json({ error: "Transfer application not found" });
     }
 
-    // Update the application status to approved
     transferApplication.isSubmited = true;
     transferApplication.isChecked = true;
-    transferApplication.isRecommended = true; // Mark as recommended
-    transferApplication.isApproved = true; // Mark as approved
+    transferApplication.isRecommended = true; 
+    transferApplication.isApproved = true; 
     transferApplication.isRejected = false;
     transferApplication.rejectReason = null;
 
-    // Save the updated document
     await transferApplication.save();
 
     res
@@ -329,15 +331,13 @@ const recommendTransferApplication = async (req, res) => {
       return res.status(404).json({ error: "Transfer application not found" });
     }
 
-    // Update the application status
     transferApplication.isSubmited = true;
     transferApplication.isChecked = true;
-    transferApplication.isRecommended = true; // Mark as recommended
+    transferApplication.isRecommended = true; 
     transferApplication.isApproved = false;
     transferApplication.isRejected = false;
     transferApplication.rejectReason = null;
 
-    // Save the updated document
     await transferApplication.save();
 
     res
@@ -352,13 +352,13 @@ const recommendTransferApplication = async (req, res) => {
 };
 
 const rejectTransferApplication = async (req, res) => {
-  const { id } = req.params; // Using 'id' instead of 'TransferApplcationId'
+  const { id } = req.params;
 
   try {
     const transferApplication = await TransferApplication.findByIdAndUpdate(
-      id, // Using 'id' here
+      id,
       {
-        isSubmited: false,
+        isSubmited: true,
         isChecked: false,
         isRecommended: false,
         isApproved: false,
