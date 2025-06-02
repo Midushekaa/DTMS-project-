@@ -99,7 +99,6 @@ const AdminLogin = () => {
         <Form
           layout="vertical"
           onFinish={handleLogin}
-          initialValues={{ adminId: "S5371V", securePassword: "259227" }}
         >
           <Form.Item
             label="Admin ID"

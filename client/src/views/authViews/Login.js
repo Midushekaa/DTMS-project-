@@ -80,7 +80,6 @@ const LoginPage = () => {
           form={form}
           name="loginForm"
           layout="vertical"
-          initialValues={{ remember: true, NIC : '200512300995' , password : '123456' }}
           onFinish={handleLogin}
           autoComplete="off"
         >
