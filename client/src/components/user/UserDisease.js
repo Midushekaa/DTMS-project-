@@ -163,6 +163,7 @@ const UserDisease = ({ user }) => {
                   <Option value="Cancer">Cancer</Option>
                   <Option value="Hepatitis">Hepatitis</Option>
                   <Option value="Leprosy">Leprosy</Option>
+                  <Option value="Other">Other</Option>
                 </Select>
               </Form.Item>
               <Form.Item

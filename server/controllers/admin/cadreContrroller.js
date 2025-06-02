@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 // Validation Rules
 exports.validate = [
-  check("service").notEmpty().withMessage("Service is required"),
+  check("designation").notEmpty().withMessage("Designation is required"),
   check("workplace_id").notEmpty().withMessage("Workplace id  is required"),
   check("approvedCadre").notEmpty().withMessage("Approved cadre is required"),
   check("existingCadre").notEmpty().withMessage("Existing cadre is required"),
@@ -17,13 +17,13 @@ exports.create = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
 
   try {
-    const { service, workplace_id } = req.body;
+    const { designation, workplace_id } = req.body;
 
-    const exists = await Cadre.findOne({ service, workplace_id });
+    const exists = await Cadre.findOne({ designation, workplace_id });
     if (exists)
       return res
         .status(400)
-        .json({ error: "Service already exists for this workplace" });
+        .json({ error: "Designation already exists for this workplace" });
 
     const cadre = await Cadre.create(req.body);
     res.status(201).json(cadre);

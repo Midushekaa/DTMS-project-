@@ -212,7 +212,7 @@ const TransferApplications = ({ record }) => {
     const match = cadres.find(
       (item) =>
         item.workplace_id === workplaceId &&
-        item.service.toLowerCase() === designation.toLowerCase()
+        item.designation.toLowerCase() === designation.toLowerCase()
     );
 
     if (match) {

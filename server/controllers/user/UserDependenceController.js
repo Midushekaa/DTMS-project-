@@ -5,7 +5,7 @@ const { dynamicValidation, runValidation, userValidation } = require("../../midd
 
 exports.validate = [
   ...userValidation,
-  ...dynamicValidation(["dependentName" , "gender", "dependent_DOB", "dependentRelationship", "live_with_dependant" ]),
+  ...dynamicValidation(["dependentName" , "gender", "dependent_DOB","categoryOfDependency", "dependentRelationship", "live_with_dependant" ]),
   runValidation,
 ];
 

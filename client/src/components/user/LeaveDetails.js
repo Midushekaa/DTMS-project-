@@ -144,7 +144,7 @@ const LeaveDetails = ({ user }) => {
                 rules={[{ required: true, message: "This field is required" }]}
               >
                 <Select>
-                  {Array.from({ length: 2025 - 1970 + 1 }, (_, index) => {
+                  {Array.from({ length: 2025 - 2019 }, (_, index) => {
                     const year = 2025 - index; // Starting from 2025 and decreasing
                     return (
                       <Option key={year} value={year}>

@@ -5,7 +5,7 @@ const { dynamicValidation, runValidation, userValidation } = require("../../midd
 
 exports.validate = [
   ...userValidation, 
-  ...dynamicValidation(["start_date","end_date","workplace","nature_of_duty", "workplace_type","workplace_city","designation"]),
+  ...dynamicValidation(["start_date","end_date","workplace","nature_of_appointment", "type_of_institution","workplace_city","designation"]),
   runValidation,
 ];
 

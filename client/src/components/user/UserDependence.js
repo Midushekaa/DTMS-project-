@@ -26,7 +26,7 @@ const Dependence = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const [natureOfDependency, setNatureOfDependency] = useState(null);
+  const [categoryOfDependency, setNatureOfDependency] = useState(null);
   const [grade, setGrade] = useState(null);
 
   const { data, fetchDeleteloading, fetchData, deleteData } = useFetchDelete(
@@ -103,9 +103,9 @@ const Dependence = ({ user }) => {
 
   const columns = [
     {
-      title: "Nature of Dependency",
-      dataIndex: "natureOfDependency",
-      key: "natureOfDependency",
+      title: "Category of Dependency",
+      dataIndex: "categoryOfDependency",
+      key: "categoryOfDependency",
       render: (text) => text || "N/A",
     },
     {
@@ -183,6 +183,12 @@ const Dependence = ({ user }) => {
       key: "Does_this_dependent_currently_undergo_any_treatment",
       render: (text) => (text ? "Yes" : "No"),
     },
+        {
+      title: "Nature Of Dependent",
+      dataIndex: "nature_of_dependent",
+      key: "nature_of_dependent",
+    },
+
     {
       title: "Does the dependent require breastfeeding",
       dataIndex: "breastfeeding_required",
@@ -230,10 +236,10 @@ const Dependence = ({ user }) => {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
           {!checkboxChecked && (
             <>
-              {/* Nature of Dependency */}
+              {/* Category of Dependency */}
               <Form.Item
-                label="Nature of Dependency"
-                name="natureOfDependency"
+                label="Category of Dependency"
+                name="categoryOfDependency"
                 style={{ flex: "1 1 48%" }}
                 rules={[{ required: true, message: "This field is required" }]}
               >
@@ -259,7 +265,7 @@ const Dependence = ({ user }) => {
               </Form.Item>
 
               {/* Breastfeeding field for Infant */}
-              {natureOfDependency === "Infant" && (
+              {categoryOfDependency === "Infant" && (
                 <Form.Item
                   label="Does the dependent require breastfeeding?"
                   name="breastfeeding_required"
@@ -275,7 +281,7 @@ const Dependence = ({ user }) => {
                 </Form.Item>
               )}
 
-              {natureOfDependency === "School Going" && (
+              {categoryOfDependency === "School Going" && (
                 <>
                   <Form.Item
                     label="Grade"
@@ -339,11 +345,11 @@ const Dependence = ({ user }) => {
               </Form.Item>
 
               {/* Optional fields for Non-Infant dependencies */}
-              {natureOfDependency !== "Infant" && (
+              {categoryOfDependency !== "Infant" && (
                 <>
                   {/* Show NIC only for non-School Going dependencies */}
-                  {natureOfDependency !== "School Going" &&
-                    natureOfDependency !== "Non-School Going Child" && (
+                  {categoryOfDependency !== "School Going" &&
+                    categoryOfDependency !== "Non-School Going Child" && (
                       <Form.Item
                         label="Dependent NIC (optional)"
                         name="dependentNIC"
@@ -354,10 +360,10 @@ const Dependence = ({ user }) => {
                     )}
 
                   {/* Workplace & designation should not be shown for School Going children */}
-                  {natureOfDependency !== "School Going" &&
-                    natureOfDependency !== "Non-School Going Child" &&
-                    natureOfDependency !== "Non-working Adult" &&
-                    natureOfDependency !== "Working Adult" && (
+                  {categoryOfDependency !== "School Going" &&
+                    categoryOfDependency !== "Non-School Going Child" &&
+                    categoryOfDependency !== "Non-working Adult" &&
+                    categoryOfDependency !== "Working Adult" && (
                       <>
                         <Form.Item
                           label="Workplace (optional)"
@@ -376,7 +382,7 @@ const Dependence = ({ user }) => {
                         </Form.Item>
                       </>
                     )}
-                  {natureOfDependency === "Working Adult" && (
+                  {categoryOfDependency === "Working Adult" && (
                     <>
                       <Form.Item
                         label="Workplace"
@@ -408,11 +414,11 @@ const Dependence = ({ user }) => {
                     </>
                   )}
 
-                  {natureOfDependency !== "Non-School Going Child" &&
-                    natureOfDependency !== "Non-working Adult" &&
-                    natureOfDependency !== "Working Adult" &&
-                    natureOfDependency !== "Elderly Dependent" &&
-                    natureOfDependency !== "School Going" && (
+                  {categoryOfDependency !== "Non-School Going Child" &&
+                    categoryOfDependency !== "Non-working Adult" &&
+                    categoryOfDependency !== "Working Adult" &&
+                    categoryOfDependency !== "Elderly Dependent" &&
+                    categoryOfDependency !== "School Going" && (
                       <>
                         <Form.Item
                           label="School (optional)"
@@ -423,8 +429,23 @@ const Dependence = ({ user }) => {
                         </Form.Item>
                       </>
                     )}
-                  {natureOfDependency &&
-                    natureOfDependency === "School Going" && (
+                     {
+                    categoryOfDependency === "Elderly Dependent" && (
+                      <>
+                        <Form.Item
+                          label="Nature of Dependent"
+                          name="nature_of_dependent"
+                          style={{ flex: "1 1 48%" }}
+                        >
+                          <Select>
+                          <Option value="Bedridden">Hearing</Option>
+                          <Option value="Require assistance for daily tasks">Require assistance for daily tasks</Option>
+                        </Select>
+                        </Form.Item>
+                      </>
+                    )}
+                  {categoryOfDependency &&
+                    categoryOfDependency === "School Going" && (
                       <Form.Item
                         label="School"
                         name="school"
@@ -440,7 +461,7 @@ const Dependence = ({ user }) => {
                       </Form.Item>
                     )}
 
-                  {natureOfDependency === "Special Need" && (
+                  {categoryOfDependency === "Special Need" && (
                     <>
                       <Form.Item
                         label="Briefly explain the Special Need of the dependant"
@@ -452,7 +473,7 @@ const Dependence = ({ user }) => {
                       </Form.Item>
                     </>
                   )}
-                  {natureOfDependency === "Disabled Dependant" && (
+                  {categoryOfDependency === "Disabled Dependant" && (
                     <>
                       <Form.Item
                         label="Disability Type"
@@ -470,7 +491,7 @@ const Dependence = ({ user }) => {
                     </>
                   )}
 
-                  {natureOfDependency === "Affected by Chronic Disease" && (
+                  {categoryOfDependency === "Affected by Chronic Disease" && (
                     <>
                       <Form.Item
                         label="Disease Type"
@@ -505,10 +526,10 @@ const Dependence = ({ user }) => {
                     </>
                   )}
 
-                  {natureOfDependency !== "Non-School Going Child" &&
-                    natureOfDependency !== "Non-working Adult" &&
-                    natureOfDependency !== "School Going" &&
-                    natureOfDependency !== "Working Adult" && (
+                  {categoryOfDependency !== "Non-School Going Child" &&
+                    categoryOfDependency !== "Non-working Adult" &&
+                    categoryOfDependency !== "School Going" &&
+                    categoryOfDependency !== "Working Adult" && (
                       <>
                         <Form.Item
                           label="School / Workplace City (optional)"
@@ -530,7 +551,7 @@ const Dependence = ({ user }) => {
                 </>
               )}
 
-              {natureOfDependency === "School Going" && (
+              {categoryOfDependency === "School Going" && (
                 <>
                   <Form.Item
                     label="School City (optional)"
@@ -550,7 +571,7 @@ const Dependence = ({ user }) => {
                 </>
               )}
 
-              {natureOfDependency === "Working Adult" && (
+              {categoryOfDependency === "Working Adult" && (
                 <>
                   <Form.Item
                     label="Work City (optional)"

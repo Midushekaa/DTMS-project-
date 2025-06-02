@@ -11,6 +11,7 @@ import {
   Checkbox,
   Modal,
   Popconfirm,
+  InputNumber
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -101,11 +102,18 @@ const UserMedicalCondition = ({ user }) => {
       render: (text) => text || "N/A",
     },
     {
+      title: "Validation Period",
+      dataIndex: "validation_period",
+      key: "validation_period",
+      render: (text) => text || "N/A",
+    },
+        {
       title: "Notes",
       dataIndex: "notes",
       key: "notes",
       render: (text) => text || "N/A",
     },
+    
     {
       title: "Created At",
       dataIndex: "createdAt",
@@ -160,6 +168,15 @@ const UserMedicalCondition = ({ user }) => {
                   <Option value="Other">Other</Option>
                 </Select>
               </Form.Item>
+
+              <Form.Item
+                  label="Validation Period (in months)"
+                  name="validation_period"
+                  style={{ flex: "1 1 48%" }}
+                  rules={[{ required: true, message: "Period is required" }]}
+                  >
+                <InputNumber min={1} style={{ width: "100%" }} />
+                </Form.Item>
 
               <Form.Item
                 label="Notes"

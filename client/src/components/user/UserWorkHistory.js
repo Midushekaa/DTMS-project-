@@ -27,7 +27,7 @@ const UserWorkHistory = ({ user }) => {
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [transferType, setTransferType] = useState(""); // Track the selected Transfer Type
-  const [natureOfDuty, setNatureOfDuty] = useState(""); // Track the selected Nature of Duty
+  const [natureOfDuty, setNatureOfDuty] = useState(""); // Track the selected Nature of Appointment
 
   const [workplaceType, setWorkplaceType] = useState("");
 
@@ -104,9 +104,9 @@ const UserWorkHistory = ({ user }) => {
   };
 
   const handleNatureOfDutyChange = (value) => {
-    setNatureOfDuty(value); // Update nature of duty when changed
+    setNatureOfDuty(value); // Update Nature of Appointment when changed
     if (value !== "Transferred") {
-      setTransferType(""); // Reset transfer type when nature of duty is not "Transferred"
+      setTransferType(""); // Reset transfer type when Nature of Appointment is not "Transferred"
     }
   };
 
@@ -117,14 +117,14 @@ const UserWorkHistory = ({ user }) => {
       key: "workplace",
     },
     {
-      title: "Workplace Type",
-      dataIndex: "workplace_type",
-      key: "workplace_type",
+      title: "Type of Institution",
+      dataIndex: "type_of_institution",
+      key: "type_of_institution",
     },
     {
-      title: "Other Workplace Type",
-      dataIndex: "other_workplace_type",
-      key: "other_workplace_type",
+      title: "Other Type of Institution",
+      dataIndex: "other_type_of_institution",
+      key: "other_type_of_institution",
       render: (text) => text || "N/A",
     },
     {
@@ -156,9 +156,9 @@ const UserWorkHistory = ({ user }) => {
       render: (text) => dayjs(text).format("YYYY-MM-DD"),
     },
     {
-      title: "Nature of Duty",
-      dataIndex: "nature_of_duty",
-      key: "nature_of_duty",
+      title: "Nature of Appointment",
+      dataIndex: "nature_of_appointment",
+      key: "nature_of_appointment",
     },
     {
       title: "Outer district",
@@ -232,8 +232,8 @@ const UserWorkHistory = ({ user }) => {
           {!checkboxChecked && (
             <>
               <Form.Item
-                label="Nature of Duty"
-                name="nature_of_duty"
+                label="Nature of Appointment"
+                name="nature_of_appointment"
                 style={{ flex: "1 1 48%" }}
                 rules={[{ required: true, message: "This field is required" }]}
               >
@@ -242,6 +242,8 @@ const UserWorkHistory = ({ user }) => {
                   <Option value="Contract Basis">Contract Basis</Option>
                   <Option value="Appointed">Appointed</Option>
                   <Option value="Transferred">Transferred</Option>
+                  <Option value="Adhoc">Adhoc</Option>
+                  <Option value="Other">Other</Option>
                 </Select>
               </Form.Item>
 
@@ -263,6 +265,7 @@ const UserWorkHistory = ({ user }) => {
                     </Option>
                     <Option value="Mutual Transfer">Mutual Transfer</Option>
                     <Option value="Special Transfer">Special Transfer</Option>
+                    <Option value="Permanent">Permanent</Option>
                     <Option value="Other">Other</Option>
                   </Select>
                 </Form.Item>
@@ -331,8 +334,8 @@ const UserWorkHistory = ({ user }) => {
               </Form.Item>
 
               <Form.Item
-                label="Workplace Type"
-                name="workplace_type"
+                label="Type of Institution"
+                name="type_of_institution"
                 style={{ flex: "1 1 48%" }}
                 rules={[{ required: true, message: "This field is required" }]}
               >
@@ -352,8 +355,8 @@ const UserWorkHistory = ({ user }) => {
 
               {workplaceType === "Other" && (
                 <Form.Item
-                  label="If the workplace type is other, please specify"
-                  name="other_workplace_type"
+                  label="If the type of institution is other, please specify"
+                  name="other_type_of_institution"
                   style={{ flex: "1 1 48%" }}
                   rules={[
                     { required: true, message: "This field is required" },
