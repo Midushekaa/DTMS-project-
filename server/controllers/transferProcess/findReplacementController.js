@@ -3,6 +3,7 @@ const TransferApplication = require("../../models/TransferApplication");
 
 exports.findReplacement = async (req, res) => {
   const { userId } = req.params;
+  const { id } = req.body;
 
   try {
     const user = await User.findById(userId);
@@ -10,7 +11,10 @@ exports.findReplacement = async (req, res) => {
       return res.status(404).json({ success: false, error: "User not found" });
     }
 
-    const transferApplication = await TransferApplication.findOne({ userId });
+    const transferApplication = await TransferApplication.findOne({
+      _id: id,
+      userId: userId,
+    });
     if (!transferApplication) {
       return res
         .status(404)

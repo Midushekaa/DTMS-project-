@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { message, Table, Card, Alert, Button, notification , Space} from "antd";
+import { message, Table, Card, Alert, Button, notification, Space } from "antd";
 import {
   fetchCheckedUsers,
   fetchCheckedApplications,
 } from "../../api/useAdmin";
 import axios from "axios";
-import RejectButton from "./DeleteButton";
+import getWorkplaces from "../../api/getWorkplaces";
+import getTransferWindows from "../../api/getTransferWindows";
+import RemoveButton from "./RemoveButton";
 
 export default function CheckingAdmin() {
   const navigate = useNavigate();
@@ -14,8 +16,8 @@ export default function CheckingAdmin() {
   const [CheckedApplications, setCheckedApplications] = useState([]);
   const [errorMessage, setErrorMessage] = useState(""); // ✅ renamed
   const [loading, setLoading] = useState(false);
-  const [workplaceData, setWorkplaceData] = useState([]);
-  const [transferWindows, setTransferWindows] = useState([]);
+  const { workplaces, fetchWorkplaces } = getWorkplaces();
+  const { transferWindows, fetchTransferWindows } = getTransferWindows();;
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -27,44 +29,6 @@ export default function CheckingAdmin() {
 
     fetchCheckedUsers(token, setCheckedUsers, setErrorMessage);
     fetchCheckedApplications(token, setCheckedApplications, setErrorMessage);
-  }, []);
-
-  useEffect(() => {
-    const fetchTransferWindows = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/transfer-window`
-        );
-        setTransferWindows(response.data);
-      } catch (error) {
-        console.error(error.response?.data?.error || "Something went wrong");
-        message.error(error.response?.data?.error || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTransferWindows();
-  }, []);
-
-  useEffect(() => {
-    const fetchWorkplaces = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/workplace`
-        );
-        setWorkplaceData(response.data);
-      } catch (error) {
-        console.error(error.response?.data?.error || "Something went wrong");
-        message.error(error.response?.data?.error || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWorkplaces();
   }, []);
 
   const calculateEligibility = (duty_assumed_date) => {
@@ -115,9 +79,11 @@ export default function CheckingAdmin() {
           description: response.data.message || "Recommend done",
           placement: "topRight",
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        fetchCheckedApplications(
+          token,
+          setCheckedApplications,
+          setErrorMessage
+        );
       } else {
         message.error("Unexpected server response");
       }
@@ -172,7 +138,7 @@ export default function CheckingAdmin() {
       dataIndex: "workplace_id",
       key: "workplace_id",
       render: (workplace_id) => {
-        const workplace = workplaceData.find((wp) => wp._id === workplace_id);
+        const workplace = workplaces.find((wp) => wp._id === workplace_id);
         return workplace ? workplace.workplace : "Unknown";
       },
     },
@@ -193,13 +159,13 @@ export default function CheckingAdmin() {
       key: "preferWorkplace_1",
       render: (preferWorkplace_1, record) => {
         const workplace1 =
-          workplaceData.find((wp) => wp._id === preferWorkplace_1)?.workplace ||
+          workplaces.find((wp) => wp._id === preferWorkplace_1)?.workplace ||
           "Unknown";
         const workplace2 =
-          workplaceData.find((wp) => wp._id === record.preferWorkplace_2)
+          workplaces.find((wp) => wp._id === record.preferWorkplace_2)
             ?.workplace || "Unknown";
         const workplace3 =
-          workplaceData.find((wp) => wp._id === record.preferWorkplace_3)
+          workplaces.find((wp) => wp._id === record.preferWorkplace_3)
             ?.workplace || "Unknown";
 
         return (
@@ -237,9 +203,11 @@ export default function CheckingAdmin() {
             Recommend
           </Button>
 
-          <RejectButton
+          <RemoveButton
             record={record}
-            onComplete={() => setTimeout(() => window.location.reload(), 2000)}
+            fetchCheckedApplications={fetchCheckedApplications}
+            setCheckedApplications={setCheckedApplications}
+            setErrorMessage={setErrorMessage}
           />
         </Space>
       ),

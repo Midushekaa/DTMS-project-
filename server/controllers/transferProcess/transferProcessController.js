@@ -8,10 +8,11 @@ const UserMedicalCondition = require("../../models/UserMedicalCondition");
 const Workplace = require("../../models/Workplace");
 const TransferApplication = require("../../models/TransferApplication");
 const { calculateWorkplaceDistance } = require("./calculateWorkplaceDistance");
-const { generateScore } = require("./scoreCalculator"); // adjust the path based on location
+const { generateScore } = require("./scoreCalculator");
 
 exports.transferProcess = async (req, res) => {
   const { userId } = req.params;
+  const { id } = req.body;
 
   try {
     const user = await User.findById(userId);
@@ -19,7 +20,11 @@ exports.transferProcess = async (req, res) => {
       return res.status(404).json({ success: false, error: "User not found" });
     }
 
-    const transferApplication = await TransferApplication.findOne({ userId });
+    const transferApplication = await TransferApplication.findOne({
+      _id: id,
+      userId: userId,
+    });
+
     if (!transferApplication) {
       return res.status(404).json({
         success: false,
@@ -85,13 +90,13 @@ exports.transferProcess = async (req, res) => {
       workplaceCategory = "Prefered";
     }
 
-    const transferDesision = "Processed";
+    const transferDecision = "Processed";
     const isProcessed = true;
 
     transferApplication.score = score;
     transferApplication.isProcessed = isProcessed;
-    transferApplication.transferDesision = transferDesision;
-    transferApplication.transferDesisionType = workplaceCategory;
+    transferApplication.transferDecision = transferDecision;
+    transferApplication.transferDecisionType = workplaceCategory;
     transferApplication.transfered_workplace_id = transferWorkplaceId;
 
     await transferApplication.save();
@@ -101,10 +106,10 @@ exports.transferProcess = async (req, res) => {
       data: {
         userId,
         isProcessed,
-        transferDesision,
+        transferDecision,
         score,
         transfered_workplace_id: transferWorkplaceId,
-        transferDesisionType: workplaceCategory,
+        transferDecisionType: workplaceCategory,
         categorizedWorkplaces,
       },
     });
@@ -118,6 +123,7 @@ exports.transferProcess = async (req, res) => {
 
 exports.publishApplication = async (req, res) => {
   const { userId } = req.params;
+  const { id } = req.body;
 
   try {
     const user = await User.findById(userId);
@@ -125,7 +131,11 @@ exports.publishApplication = async (req, res) => {
       return res.status(404).json({ success: false, error: "User not found" });
     }
 
-    const transferApplication = await TransferApplication.findOne({ userId });
+    const transferApplication = await TransferApplication.findOne({
+      _id: id,
+      userId: userId,
+    });
+
     if (!transferApplication) {
       return res.status(404).json({
         success: false,

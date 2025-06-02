@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Workplace",
       required: true,
-    }, // Foreign key reference
+    },
     email: { type: String, default: null, sparse: true },
     contactNumber: { type: String, required: true },
     password: { type: String, required: true },

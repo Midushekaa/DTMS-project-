@@ -79,7 +79,7 @@ const TransferApplcationSchema = new mongoose.Schema(
 
     
     transferDecision: { type: String },
-    transferDesisionType: { type: String },
+    transferDecisionType: { type: String },
     transfered_workplace_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Workplace",

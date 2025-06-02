@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Spin, message, Table, Input, Select, Typography } from "antd";
 import axios from "axios";
-import ResetPasswordModal from "./ResetPasswordModal"; // Adjust the path if needed
+import ResetPasswordModal from "./ResetPasswordModal";
 import getWorkplaces from "../../api/getWorkplaces";
 import useCheckAdminAuth from "../../utils/checkAdminAuth";
-const { Title } = Typography;
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -37,13 +36,19 @@ const UserManagement = () => {
           setUsers(data);
           setAllUsers(data);
         } else {
-          message.error("No users found");
+          message.info("No users found");
         }
       })
 
-      .catch((error) =>
-        message.error(error.response?.data?.error || "Failed to load user data")
-      )
+      .catch((error) => {
+        if (error.response?.data?.error) {
+          message.error(error.response.data.error);
+        } else if (error.response?.data?.info) {
+          message.info(error.response.data.info);
+        } else {
+          message.error("Failed to load data");
+        }
+      })
       .finally(() => setLoading(false));
   }, []);
 

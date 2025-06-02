@@ -2,7 +2,7 @@ import { Button, message, notification } from "antd";
 import axios from "axios";
 import { useState } from "react";
 
-const DeleteButton = ({ record, onComplete }) => {
+const RemoveButton = ({ record,fetchPendingApplications,setPendingApplications,setErrorMessage }) => {
   const [loading, setLoading] = useState(false);
 
   const handleReject = async () => {
@@ -32,7 +32,9 @@ const DeleteButton = ({ record, onComplete }) => {
           description: response.data.message || "Application rejected",
           placement: "topRight",
         });
-        if (onComplete) onComplete();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
       } else {
         message.error("Unexpected server response");
       }
@@ -51,9 +53,9 @@ const DeleteButton = ({ record, onComplete }) => {
 
   return (
     <Button type="primary" danger loading={loading} onClick={handleReject}>
-      Delete
+      Remove
     </Button>
   );
 };
 
-export default DeleteButton;
+export default RemoveButton;

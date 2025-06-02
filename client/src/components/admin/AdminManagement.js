@@ -11,6 +11,7 @@ import {
   Typography
 } from "antd";
 import axios from "axios";
+import getWorkplaces from "../../api/getWorkplaces";
 
 const { Option } = Select;
 
@@ -19,33 +20,12 @@ const AdminManagement = () => {
   const [adminData, setAdminData] = useState([]);
   const [filteredAdminData, setFilteredAdminData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [workplaces, setWorkplaces] = useState([]);
+  const { workplaces, fetchWorkplaces } = getWorkplaces();;
   const [filterWorkplace, setFilterWorkplace] = useState("");
-  const [loadingWorkplaces, setLoadingWorkplaces] = useState(true); // Track workplaces loading
-
-  // Fetch Workplaces
-  const fetchWorkplaces = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/workplace`
-      );
-      setWorkplaces(response.data || []);
-      setLoadingWorkplaces(false); // Set loadingWorkplaces to false when data is fetched
-    } catch (error) {
-      message.error(
-        error.response?.data?.error || "Failed to fetch workplaces"
-      );
-      setLoadingWorkplaces(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchWorkplaces();
-  }, []);
+ 
 
   // Fetch Admin Data
   const fetchData = useCallback(async () => {
-    if (!loadingWorkplaces) {
       setLoading(true);
       try {
         const response = await axios.get(
@@ -64,14 +44,13 @@ const AdminManagement = () => {
       } finally {
         setLoading(false);
       }
-    }
-  }, [loadingWorkplaces, workplaces]);
+
+  }, [workplaces]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]); // Dependency array includes fetchData
+  }, [fetchData]);
 
-  // Form Submission Handler
   const onFinish = async (values) => {
     try {
       setLoading(true);
@@ -83,19 +62,19 @@ const AdminManagement = () => {
       message.success(
         response.data.message || "Super Admin details saved successfully!"
       );
-      fetchData(); // Re-fetch the admin data after saving
+      fetchData(); 
 
       const newAdminData = {
         ...response.data,
         workplace_name:
           workplaces.find((wp) => wp._id === response.data.workplace_id)
-            ?.workplace || "No Workplace Assigned", // Directly access workplace name
+            ?.workplace || "No Workplace Assigned",
       };
 
       const newData = [...adminData, newAdminData];
       setAdminData(newData);
       setFilteredAdminData(newData);
-      form.resetFields(); // Reset the form after submission
+      form.resetFields(); 
     } catch (error) {
       message.error(
         error.response?.data?.error || "Failed to save Super Admin details"
@@ -105,7 +84,6 @@ const AdminManagement = () => {
     }
   };
 
-  // Handle Deleting Admin
   const handleDelete = async (id) => {
     setLoading(true);
     try {
@@ -123,7 +101,6 @@ const AdminManagement = () => {
     }
   };
 
-  // Filtering admin data by workplace
   useEffect(() => {
     if (filterWorkplace) {
       setFilteredAdminData(
@@ -149,7 +126,7 @@ const AdminManagement = () => {
       title: "Admin Role",
       dataIndex: "adminRole",
       key: "adminRole",
-      // render: (text) => text.replace(/([a-z])([A-Z])/g, "$1 $2"), // Converts camelCase to normal text
+      render: (text) => text.replace(/([a-z])([A-Z])/g, "$1 $2"), // Converts camelCase to normal text
     },
     { title: "Password", dataIndex: "password", key: "password" },
     {
@@ -169,7 +146,7 @@ const AdminManagement = () => {
   ];
 
   return (
-    <div className="p-8 max-w-6xl mx-auto text-left">
+    <div className="max-w-6xl mx-auto text-left">
       <Typography.Title level={3} className="mb-8 mt-5 pb-3">
         Admin Management
       </Typography.Title>
@@ -252,7 +229,7 @@ const AdminManagement = () => {
             "Divisional Secretariat, Thirukkovil",
             "Divisional Secretariat, Pothuvil",
             "Divisional Secretariat, Kalmunai",
-            "Divisional Secretariat, Kalmunai (Tamil)",
+            "Divisional Secretariat, Kalmunai (North)",
             "Divisional Secretariat, Karathivu",
           ].map((place) => (
             <Select.Option key={place} value={place}>
