@@ -303,26 +303,19 @@ const Cadre = () => {
               rules={[{ required: true }]}
             >
               <Select placeholder="Select a cadre category">
-                <Option value="Divisional Secretary">
-                  Divisional Secretary
-                </Option>
-                <Option value="Assistant Divisional Secretary">
-                  Assistant Divisional Secretary
-                </Option>
-                <Option value="Accountant">Accountant</Option>
                 <Option value="Engineer">Engineer</Option>
                 <Option value="DP/DDP/ADP">DP/DDP/ADP</Option>
-                <Option value="Administrative Officer">
-                  Administrative Officer
-                </Option>
-                <Option value="Administrative Grama Niladhari">
-                  Administrative Grama Niladhari
-                </Option>
                 <Option value="Development Officer (Public Administration)">
                   Development Officer (Public Administration)
                 </Option>
+                 <Option value="Development Officer (Other)">
+                  Development Assistant 
+                </Option>
+                 <Option value="Development Officer (Other)">
+                  Development Officer 
+                </Option>
                 <Option value="Development Officer (Other)">
-                  Development Officer (Other)
+                  Development Officer (Development)
                 </Option>
                 <Option value="Technical Officer">Technical Officer</Option>
                 <Option value="Technical Assistant">Technical Assistant</Option>
@@ -334,7 +327,7 @@ const Cadre = () => {
                   Information & Communication Technology Assistant
                 </Option>
                 <Option value="Grama Niladhari">Grama Niladhari</Option>
-                <Option value="Translator">Translator</Option>
+                <Option value="Translator">Translator (Sinhala - Tamil)</Option>
                 <Option value="Office Employment Service Officers">
                   Office Employment Service Officers
                 </Option>

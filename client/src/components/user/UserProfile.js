@@ -251,8 +251,7 @@ const handleLocationClick = () => {
                 Sri Lanka Administrative Service
               </Option>
               <Option
-                value="Sri Lanka Engineering Service
-"
+                value="Sri Lanka Engineering Service"
               >
                 Sri Lanka Engineering Service
               </Option>

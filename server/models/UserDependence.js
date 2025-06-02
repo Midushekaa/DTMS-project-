@@ -27,7 +27,7 @@ const UserDependenceSchema = new mongoose.Schema(
       type: String,
       required: [true, "Gender is required"], // Custom message
     },
-    natureOfDependency: {
+    categoryOfDependency: {
       type: String,
       required: [true, "Nature dependency is required"], // Custom message
     },
@@ -52,6 +52,9 @@ const UserDependenceSchema = new mongoose.Schema(
       type: String,
     },
     disease_type: {
+      type: String,
+    },
+      nature_of_dependent: {
       type: String,
     },
     Does_this_dependent_currently_undergo_any_treatment: {

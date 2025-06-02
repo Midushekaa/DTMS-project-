@@ -26,7 +26,7 @@ import useUserData from "../../api/useUserData";
 
 import { Grid } from "antd";
 const { useBreakpoint } = Grid;
-const { Content, Sider } = Layout;
+const { Sider } = Layout;
 
 const UpdateProfile = () => {
   const { user, loading, error } = useUserData();
