@@ -52,7 +52,7 @@ const Cadre = () => {
   const handleUpdate = (record) => {
     setEditingcadre(record);
     form.setFieldsValue({
-      service: record.service, // Ensure this matches the form field name
+      designation: record.designation, // Ensure this matches the form field name
       approvedCadre: record.approvedCadre, // Ensure this matches the form field name
       existingCadre: record.existingCadre, // Ensure this matches the form field name
     });
@@ -201,7 +201,7 @@ const Cadre = () => {
   }, []);
 
   const columns = [
-    { title: "Cadre Category", dataIndex: "service", key: "service" },
+    { title: "Cadre Category", dataIndex: "designation", key: "designation" },
     {
       title: "Approved cadre",
       dataIndex: "approvedCadre",
@@ -298,7 +298,7 @@ const Cadre = () => {
         <Card title="Add Government Cadre" className="mb-4 rounded-lg">
           <Form form={form} layout="vertical" onFinish={onFinish}>
             <Form.Item
-              name="service"
+              name="designation"
               label="Cadre Category"
               rules={[{ required: true }]}
             >
@@ -424,7 +424,7 @@ const Cadre = () => {
       >
         {editingcadre && (
           <Form form={form} layout="vertical" onFinish={onUpdate}>
-            <Form.Item name="service" label="Cadre Category">
+            <Form.Item name="designation" label="Cadre Category">
               <Select placeholder="Select a cadre category" disabled>
                 <Option value="Divisional Secretary">
                   Divisional Secretary
