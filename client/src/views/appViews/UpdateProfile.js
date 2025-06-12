@@ -16,7 +16,6 @@ import { Link } from "react-router-dom";
 import UserProfile from "../../components/user/UserProfile";
 import UserWorkHistory from "../../components/user/UserWorkHistory";
 import LeaveDetails from "../../components/user/LeaveDetails";
-import Petitions from "../../components/user/Petitions";
 import UserDependence from "../../components/user/UserDependence";
 import UserDisease from "../../components/user/UserDisease";
 import UserMedicalCondition from "../../components/user/UserMedicalCondition";
@@ -59,15 +58,6 @@ const UpdateProfile = () => {
         key: "LeaveDetails",
         label: "Leave Details",
         icon: user?.isLeaveDetailsSubmited ? (
-          <CheckCircleOutlined style={{ color: "green" }} />
-        ) : (
-          <CalendarOutlined />
-        ),
-      },
-      {
-        key: "Petitions",
-        label: "Petitions & Disciplinary Actions",
-        icon: user?.isPettionSubmited ? (
           <CheckCircleOutlined style={{ color: "green" }} />
         ) : (
           <CalendarOutlined />
@@ -128,7 +118,6 @@ const UpdateProfile = () => {
         {currentSection === "BasicDetails" && <UserProfile user={user} />}
         {currentSection === "WorkHistory" && <UserWorkHistory user={user} />}
         {currentSection === "LeaveDetails" && <LeaveDetails user={user} />}
-        {currentSection === "Petitions" && <Petitions user={user} />}
         {currentSection === "Dependency" && <UserDependence user={user} />}
         {currentSection === "Disease" && <UserDisease user={user} />}
         {currentSection === "MedicalCondition" && (

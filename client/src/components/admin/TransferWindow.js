@@ -39,16 +39,14 @@ const TransferWindow = () => {
         setIsEnabled(false);
         setActiveWindow(null);
       }
-    }  catch (error) {
-        console.info(
-          error.response?.data?.info ||
-          "Failed to fetch. Please try again later"
-        );
-        message.info(
-          error.response?.data?.info ||
-            "Failed to fetch. Please try again later"
+    } catch (error) {
+      console.info(
+        error.response?.data?.info || "Failed to fetch. Please try again later"
       );
-      }
+      message.info(
+        error.response?.data?.info || "Failed to fetch. Please try again later"
+      );
+    }
   };
 
   useEffect(() => {
@@ -56,38 +54,40 @@ const TransferWindow = () => {
   }, []);
 
   const handleSave = async () => {
-  try {
-    await form.validateFields();
-    const values = form.getFieldsValue();
-    const data = {
-      name: values.name,
-      closingDate: values.closingDate,
-      applicationClosingDate: values.applicationClosingDate,
-      status: "Open",
-      isTerminated: false,
-    };
+    try {
+      await form.validateFields();
+      const values = form.getFieldsValue();
+      const data = {
+        name: values.name,
+        closingDate: values.closingDate,
+        applicationClosingDate: values.applicationClosingDate,
+        status: "Open",
+        isTerminated: false,
+      };
 
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/transfer-window`,
-      data
-    );
-    
-    message.success(response.message || "Transfer window saved successfully.");
-    fetchTransferWindows();
-    form.resetFields();
-  } catch (error) {
-    if (error.errorFields) {
-      message.error("Please fill all required fields!");
-    } else {
-      message.error(
-        error.response?.data?.error ||
-        error.response?.data?.errors?.[0]?.msg ||
-        "Failed to save transfer window details."
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/transfer-window`,
+        data
       );
+
+      message.success(
+        response.message || "Transfer window saved successfully."
+      );
+      fetchTransferWindows();
+      form.resetFields();
+    } catch (error) {
+      if (error.errorFields) {
+        message.error("Please fill all required fields!");
+      } else {
+        message.error(
+          error.response?.data?.error ||
+            error.response?.data?.errors?.[0]?.msg ||
+            "Failed to save transfer window details."
+        );
+      }
+      console.error("Error:", error);
     }
-    console.error("Error:", error);
-  }
-};
+  };
 
   const handleTerminate = async () => {
     if (activeWindow) {
@@ -214,20 +214,9 @@ const TransferWindow = () => {
                 { required: true, message: "Please enter the window name!" },
               ]}
             >
-              <Input placeholder="2025/2026" className="rounded-md" />
-            </Form.Item>
-
-            <Form.Item
-              name="applicationClosingDate"
-              label="Application Closing Date"
-              rules={[
-                { required: true, message: "Please select a closing date!" },
-              ]}
-            >
               <Input
-                type="date"
+                placeholder="Enter the window name"
                 className="rounded-md"
-                min={new Date().toISOString().split("T")[0]}
               />
             </Form.Item>
 
@@ -239,6 +228,16 @@ const TransferWindow = () => {
                 { required: true, message: "Please select a closing date!" },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const minDate = tomorrow.toISOString().split("T")[0];
+
+                    if (new Date(value) < new Date(minDate)) {
+                      return Promise.reject(
+                        new Error("Must select a future date")
+                      );
+                    }
+
                     const applicationDate = getFieldValue(
                       "applicationClosingDate"
                     );
@@ -246,9 +245,7 @@ const TransferWindow = () => {
                     if (new Date(value) > new Date(applicationDate))
                       return Promise.resolve();
                     return Promise.reject(
-                      new Error(
-                        "Transfer Window Closing Date must be after the Application Closing Date"
-                      )
+                      new Error("Must be after Application Closing Date")
                     );
                   },
                 }),
@@ -257,7 +254,43 @@ const TransferWindow = () => {
               <Input
                 type="date"
                 className="rounded-md"
-                min={new Date().toISOString().split("T")[0]}
+                min={
+                  new Date(new Date().setDate(new Date().getDate() + 1))
+                    .toISOString()
+                    .split("T")[0]
+                }
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="applicationClosingDate"
+              label="Application Closing Date"
+              rules={[
+                { required: true, message: "Please select a closing date!" },
+                () => ({
+                  validator(_, value) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const minDate = tomorrow.toISOString().split("T")[0];
+
+                    if (new Date(value) < new Date(minDate)) {
+                      return Promise.reject(
+                        new Error("Must select a future date")
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
+            >
+              <Input
+                type="date"
+                className="rounded-md"
+                min={
+                  new Date(new Date().setDate(new Date().getDate() + 1))
+                    .toISOString()
+                    .split("T")[0]
+                }
               />
             </Form.Item>
 

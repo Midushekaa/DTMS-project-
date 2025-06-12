@@ -12,30 +12,28 @@ import {
   Popconfirm,
   Input, // Add InputNumber for selecting months
 } from "antd";
-import { useNavigate } from "react-router-dom";
 import useFetchDelete from "../../api/useFetchDelete";
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-const Petitions = ({ user }) => {
-  const navigate = useNavigate();
+const Petitions = ({ userId }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
 
   const { data, fetchDeleteloading, fetchData, deleteData } = useFetchDelete(
-    `user/pettion/user/${user._id}`, // Dynamic fetch endpoint
+    `user/pettion/user/${userId}`, // Dynamic fetch endpoint
     "user/pettion" // Delete endpoint
   );
 
   const updateProgressValue = () => {
     let collection = "userpettions";
-    if (user) {
+    if (userId) {
       axios
         .put(
-          `${process.env.REACT_APP_API_URL}/user/user/progress/${user._id}`,
+          `${process.env.REACT_APP_API_URL}/user/user/progress/${userId}`,
           { collection: collection }
         )
         .then((response) => {
@@ -47,7 +45,6 @@ const Petitions = ({ user }) => {
             message.success(
               response.data.message || "Profile updated successfully"
             );
-            navigate("/dashboard");
           }
         })
         .catch((error) => {
@@ -71,7 +68,7 @@ const Petitions = ({ user }) => {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/user/pettion`,
-        { ...values, userId: user._id }, // Include userId
+        { ...values, userId: userId }, // Include userId
         { headers: { Authorization: `Bearer ${token}` } }
       );
       message.success(response.data.message || "pettion saved successfully");
@@ -185,7 +182,7 @@ const Petitions = ({ user }) => {
 
         <Form.Item>
           <Checkbox onChange={(e) => setCheckboxChecked(e.target.checked)}>
-            I don’t have any petitions
+            officer doesn't have any petitions
           </Checkbox>
         </Form.Item>
 
@@ -193,7 +190,6 @@ const Petitions = ({ user }) => {
           <Button
             type="primary"
             onClick={() => setConfirmVisible(true)}
-            block
             disabled={loading || fetchDeleteloading}
           >
             {loading || fetchDeleteloading ? <Spin /> : "Confirm"}
@@ -202,7 +198,6 @@ const Petitions = ({ user }) => {
           <Button
             type="primary"
             htmlType="submit"
-            block
             disabled={loading || fetchDeleteloading}
           >
             {loading || fetchDeleteloading ? <Spin /> : "Save"}

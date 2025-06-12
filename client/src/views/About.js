@@ -28,7 +28,7 @@ const About = () => {
 
         <p className="text-gray-700 text-lg mb-8 leading-relaxed text-center">
           Developed using the robust{" "}
-          <strong className="font-semibold">MERN stack</strong> (MongoDB,
+          MERN stack (MongoDB,
           Express.js, React.js, Node.js), DTMS offers intuitive interfaces for
           requesting transfers, tracking application status, and receiving
           real-time updates.
@@ -62,7 +62,7 @@ const About = () => {
               </p>
             </div>
             <div className="bg-white p-6 rounded-lg border border-gray-100 relative">
-              <div className="absolute top-4 right-4 bg-blue-700 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center">
+              <div className="absolute top-4 right-4 bg-gray-900 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-3 w-3 mr-1"

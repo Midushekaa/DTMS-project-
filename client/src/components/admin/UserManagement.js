@@ -10,12 +10,18 @@ import {
   Tooltip,
   Select,
   Typography,
+  Drawer,
 } from "antd";
 import axios from "axios";
-import { EyeOutlined, UnlockOutlined } from "@ant-design/icons";
-import ResetPasswordModal from "./ResetPasswordModal"; // Adjust the path if needed
+import {
+  EyeOutlined,
+  UnlockOutlined,
+  FileAddOutlined,
+} from "@ant-design/icons";
+import ResetPasswordModal from "./ResetPasswordModal";
 import getWorkplaces from "../../api/getWorkplaces";
 import useCheckAdminAuth from "../../utils/checkAdminAuth";
+import UserPettions from "../user/Petitions";
 
 const UserManagement = () => {
   const navigate = useNavigate();
@@ -32,6 +38,19 @@ const UserManagement = () => {
   const { workplaces } = getWorkplaces();
   const { adminData } = useCheckAdminAuth();
   const adminRole = adminData.adminRole || null;
+
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+
+  const showPetitionDrawer = (userId) => {
+    setSelectedUserId(userId);
+    setDrawerVisible(true);
+  };
+
+  const closePetitionDrawer = () => {
+    setDrawerVisible(false);
+    setSelectedUserId(null);
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -152,7 +171,6 @@ const UserManagement = () => {
       key: "actions",
       render: (_, record) => (
         <div style={{ display: "flex", gap: "10px" }}>
-          {/* View Profile Button */}
           <Tooltip title="View profile">
             <Button
               className="btn text-blue-500"
@@ -165,11 +183,17 @@ const UserManagement = () => {
             />
           </Tooltip>
 
-          {/* Change Password Button with Tooltip */}
           <Tooltip title="Reset Password">
             <Button
               icon={<UnlockOutlined />}
               onClick={() => showResetPasswordModal(record)}
+            />
+          </Tooltip>
+
+          <Tooltip title="Add Petition">
+            <Button
+              icon={<FileAddOutlined />}
+              onClick={() => showPetitionDrawer(record._id)}
             />
           </Tooltip>
         </div>
@@ -290,6 +314,15 @@ const UserManagement = () => {
         rowKey="_id"
         scroll={{ x: false }}
       />
+      <Drawer
+        title="Add Petition"
+        placement="right"
+        onClose={closePetitionDrawer}
+        open={drawerVisible}
+        width={'80%'}
+      >
+        <UserPettions userId={selectedUserId} />
+      </Drawer>
     </div>
   );
 };
