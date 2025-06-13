@@ -1,7 +1,7 @@
 import { Modal, message } from "antd";
 import ReactDOM from "react-dom";
 import React from "react";
-import GPSModal from "../components/user/GPSModal";
+import GPSModal from "../components/user/updateProfile/GPSModal";
 
 export const getLocation = async (
   isMobile,

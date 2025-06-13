@@ -118,7 +118,7 @@ exports.transferProcess = async (req, res) => {
       error: scoreBreakdown.error || "",
     };
 
-    transferApplication.isProcessed = false;
+    transferApplication.isProcessed = true;
     transferApplication.transferDecision = "Processed";
     transferApplication.transferDecisionType = workplaceCategory;
     transferApplication.transfered_workplace_id = transferWorkplaceId;
