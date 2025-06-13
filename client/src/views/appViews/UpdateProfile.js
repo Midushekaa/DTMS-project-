@@ -47,7 +47,7 @@ const UpdateProfile = () => {
       },
       {
         key: "WorkHistory",
-        label: "Work History",
+        label: "Service History",
         icon: user?.isWorkHistorySubmited ? (
           <CheckCircleOutlined style={{ color: "green" }} />
         ) : (

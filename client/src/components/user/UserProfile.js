@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Form,
-  Input,
-  Button,
-  Select,
-  DatePicker,
-  message,
-  Spin
-} from "antd";
+import { Form, Input, Button, Select, DatePicker, message, Spin,Divider } from "antd";
 import { LoadingOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import useUserData from "../../api/useUserData";
 import { useNavigate } from "react-router-dom";
-import { getLocation } from '../../utils/getLocation';
+import { getLocation } from "../../utils/getLocation";
 import getWorkplaces from "../../api/getWorkplaces";
 
 const { Option } = Select;
@@ -22,7 +14,7 @@ const UserProfile = ({ user }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(true);
   const { workplaces } = getWorkplaces();
-  
+
   const [disabled, setDisabled] = useState(false);
   const [locationError, setLocationError] = useState(null);
 
@@ -38,9 +30,9 @@ const UserProfile = ({ user }) => {
     console.log(deviceType ? "Mobile" : "Desktop");
   }, []);
 
-const handleLocationClick = () => {
-  getLocation(isMobile, form, setLoading, setDisabled, setLocationError);
-};
+  const handleLocationClick = () => {
+    getLocation(isMobile, form, setLoading, setDisabled, setLocationError);
+  };
 
   useEffect(() => {
     if (user) {
@@ -105,6 +97,7 @@ const handleLocationClick = () => {
   return (
     <div style={{ maxWidth: 1200, margin: "auto", padding: 30 }}>
       <Form form={form} layout="vertical" onFinish={onFinish}>
+        <Divider orientation="center">Personal Details</Divider>
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
           <Form.Item
             label="Name with Initial"
@@ -166,17 +159,45 @@ const handleLocationClick = () => {
           >
             <Input type="tel" />
           </Form.Item>
-          <Form.Item
-            label="First Appointment Date"
-            name="first_appointment_date"
-            style={{ flex: "1 1 48%" }}
-          >
-            <DatePicker format="YYYY-MM-DD" style={{ width: "100%" }} />
+          <Form.Item label="City" name="city" style={{ flex: "1 1 48%" }}>
+            <Input />
           </Form.Item>
         </div>
+         
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
           <Form.Item
-            label="Workplace"
+            label="Resident Type"
+            name="resident_type"
+            style={{ flex: "1 1 48%" }}
+          >
+            <Select>
+              <Option value="Own house">Own house</Option>
+              <Option value="Rented">Rented</Option>
+              <Option value="Government Accommodation (Quarters)">
+                Government Accommodation (Quarters)
+              </Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Civil Status"
+            name="civil_status"
+            style={{ flex: "1 1 48%" }}
+          >
+            <Select>
+              <Option value="Single/Never married">Single/Never married</Option>
+              <Option value="Married">Married</Option>
+              <Option value="Divorced">Divorced</Option>
+              <Option value="Legally Separated">Legally Separated</Option>
+              <Option value="Widowed">Widowed</Option>
+            </Select>
+          </Form.Item>
+        </div>
+
+        <Divider orientation="center">Work Details</Divider>
+
+        <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+          <Form.Item
+            label="Current Workplace"
             name="workplace_id"
             style={{ flex: "1 1 48%" }}
           >
@@ -189,12 +210,11 @@ const handleLocationClick = () => {
             </Select>
           </Form.Item>
           <Form.Item
-            label="Designation"
+            label="Current Designation"
             name="designation"
             style={{ flex: "1 1 48%" }}
           >
             <Select placeholder="Select a designation">
-             
               <Option value="Engineer">Engineer</Option>
               <Option value="DP/DDP/ADP">DP/DDP/ADP</Option>
               <Option value="Development Officer (Public Administration)">
@@ -206,10 +226,10 @@ const handleLocationClick = () => {
               <Option value="Development Officer (Development)">
                 Development Officer (Development)
               </Option>
-               <Option value="Development Co-ordinator">
+              <Option value="Development Co-ordinator">
                 Development Co-ordinator
               </Option>
-                <Option value="Development Assistant">
+              <Option value="Development Assistant">
                 Development Assistant
               </Option>
               <Option value="Technical Officer">Technical Officer</Option>
@@ -239,18 +259,22 @@ const handleLocationClick = () => {
           >
             <DatePicker type="date" style={{ width: "100%" }} />
           </Form.Item>
-          <Form.Item label="City" name="city" style={{ flex: "1 1 48%" }}>
-            <Input />
+          <Form.Item
+            label="First Appointment Date at First Workplace"
+            name="first_appointment_date"
+            style={{ flex: "1 1 48%" }}
+          >
+            <DatePicker format="YYYY-MM-DD" style={{ width: "100%" }} />
           </Form.Item>
         </div>
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
           <Form.Item label="Service" name="service" style={{ flex: "1 1 48%" }}>
             <Select>
-            <Option value="Sri Lanka Administrative Service">
+              <Option value="Sri Lanka Administrative Service">
                 Sri Lanka Administrative Service
               </Option>
               <Option value="Sri Lanka Administrative Service">
-               Management Service officers
+                Management Service officers
               </Option>
               <Option value="Sri Lanka Information & Communication Technology Service">
                 Sri Lanka Information & Communication Technology Service
@@ -270,12 +294,12 @@ const handleLocationClick = () => {
               <Option value="Office Employees’ Service">
                 Office Employees’ Service
               </Option>
-               <Option value="Teachnical Officers' service">
+              <Option value="Teachnical Officers' service">
                 Teachnical Officers' service
               </Option>
               <Option value="Teachnical Assistant' service">
-                Teachnical Assistant' service
-              </Option>
+                Teachnical Assistant' service        
+              </Option>
             </Select>
           </Form.Item>
           <Form.Item label="Class" name="class" style={{ flex: "1 1 48%" }}>
@@ -287,49 +311,17 @@ const handleLocationClick = () => {
           </Form.Item>
         </div>
 
-        {/* New fields */}
-        <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <Form.Item
-            label="Resident Type"
-            name="resident_type"
-            style={{ flex: "1 1 48%" }}
-          >
-            <Select>
-              <Option value="Own house">Own house</Option>
-              <Option value="Rented">Rented</Option>
-              <Option value="Government Accommodation (Quarters)">
-                Government Accommodation (Quarters)
-              </Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="W&OP No. (optional)"
+            label="W&OP No"
             name="wop_number"
             style={{ flex: "1 1 48%" }}
           >
             <Input />
           </Form.Item>
-        </div>
-        {/* New fields */}
-        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-          <Form.Item
-            label="Civil Status"
-            name="civil_status"
-            style={{ flex: "1 1 48%" }}
-          >
-            <Select>
-              <Option value="Single/Never married">Single/Never married</Option>
-              <Option value="Married">Married</Option>
-              <Option value="Divorced">Divorced</Option>
-              <Option value="Legally Separated">Legally Separated</Option>
-              <Option value="Widowed">Widowed</Option>
-            </Select>
-          </Form.Item>
-          <div
-            className="flex"
-            style={{ flex: "1 1 48%", gap: "20px", alignItems: "center" }}
-          >
-            <Form.Item label="GPS Coordinates">
+
+          <div style={{ flex: "1 1 48%" }}>
+            <Form.Item label="GPS Coordinates" style={{ marginBottom: 25 }}>
               <div style={{ display: "flex", gap: 16 }}>
                 <Form.Item
                   name="GPS_latitude"
@@ -382,13 +374,13 @@ const handleLocationClick = () => {
                 </Form.Item>
               </div>
             </Form.Item>
-          </div>
 
-          {locationError && (
-            <p style={{ color: "red", marginTop: "10px" }}>{locationError}</p>
-          )}
+            {locationError && (
+              <p style={{ color: "red", marginTop: "5px" }}>{locationError}</p>
+            )}
+          </div>
         </div>
- 
+
         <Button type="primary" htmlType="submit" block>
           Update
         </Button>

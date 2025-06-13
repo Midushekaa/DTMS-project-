@@ -1,4 +1,7 @@
 import { Modal, message } from "antd";
+import ReactDOM from "react-dom";
+import React from "react";
+import GPSModal from "../components/user/GPSModal";
 
 export const getLocation = async (
   isMobile,
@@ -8,12 +11,20 @@ export const getLocation = async (
   setLocationError
 ) => {
   if (!isMobile) {
-    Modal.warning({
-      title: "Mobile Only",
-      content: "Please use a mobile device for location access.",
-    });
+    message.warning("You're on a desktop. Please select your location manually.");
+    
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+
+    const close = () => {
+      ReactDOM.unmountComponentAtNode(container);
+      document.body.removeChild(container);
+    };
+
+    ReactDOM.render(<GPSModal visible={true} onClose={close} />, container);
     return;
   }
+
   setLoading(true);
   setLocationError(null);
 
@@ -23,8 +34,7 @@ export const getLocation = async (
     if (perm.state === "denied") {
       Modal.warning({
         title: "Location Blocked",
-        content:
-          "Please enable location access in your browser settings to use this feature.",
+        content: "Enable location access in your browser settings to continue.",
       });
       setLoading(false);
       return;

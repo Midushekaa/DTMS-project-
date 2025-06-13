@@ -1,6 +1,6 @@
 import { Modal } from "antd";
 
-const GPSTrackerModal = ({ visible, onClose }) => {
+const GPSModal = ({ visible, onClose }) => {
   return (
     <Modal
       title="Select Location"
@@ -9,7 +9,7 @@ const GPSTrackerModal = ({ visible, onClose }) => {
       footer={null}
       width={800}
     >
-      <div style={{ marginTop: 20 }}>
+      <div style={{ marginTop: 10, marginBottom: 10  }}>
         <p style={{ fontWeight: "bold" }}>
           Follow the steps below to select your preferred location:
         </p>
@@ -22,7 +22,19 @@ const GPSTrackerModal = ({ visible, onClose }) => {
           </li>
         </ul>
       </div>
-      <br />
+       <p style={{ marginTop: 4 }}>
+        You can also select your location directly on the map by clicking the
+        link below.
+      </p>
+       <a
+        href="https://www.google.com/maps/@7.2975,81.6820,12z"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ color: "#1a73e8", fontSize: "16px" }}
+      >
+        Open Google Maps
+      </a>
+      <br/><br/>
       <iframe
         src="https://www.youtube.com/embed/H1AX9lPQ7RY?si=15wRnEubuKKIWI51"
         width="100%"
@@ -32,21 +44,8 @@ const GPSTrackerModal = ({ visible, onClose }) => {
         loading="lazy"
         title="Select Location Guide"
       />
-      <br />
-      <a
-        href="https://www.google.com/maps/@7.2975,81.6820,12z"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ color: "#1a73e8", fontSize: "16px" }}
-      >
-        Open Google Maps
-      </a>
-      <p style={{ marginTop: 20 }}>
-        You can also select your location directly on the map by clicking the
-        link above.
-      </p>
     </Modal>
   );
 };
 
-export default GPSTrackerModal;
+export default GPSModal;
