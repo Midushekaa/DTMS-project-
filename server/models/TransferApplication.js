@@ -35,49 +35,31 @@ const TransferApplcationSchema = new mongoose.Schema(
     },
 
     remarks: { type: String },
-    score: { type: String },
+    // score: { type: String },
+    score: {
+      totalScore: { type: String },
+      distance: { type: String },
+      workedOuterDistrict: { type: String },
+      favourableStationOuterDistrict: { type: String },
+      marriedWithYoungChild: { type: String },
+      marriedWithOlderChild: { type: String },
+      gender: { type: String },
+      disease: { type: String },
+      majorSurgery: { type: String },
+      disabledDependent: { type: String },
+      elderlyDependent: { type: String },
+      dutyDuration: { type: String },
+      pettisionFromPeoplesRepresentatives: { type: String },
+      pettisionFromPublic: { type: String },
+      pettisionFromSuperiorOfficials: { type: String },
+      pregnancyWithDisease: { type: String },
+      higherPregnancyPeriod: { type: String },
+      lactatingMother: { type: String },
+      metOnAccident: { type: String },
+      fertilityTreatment: { type: String },
+      error: { type: String },
+    },
 
-    // score: {
-    //   totalScore: { type: String },
-    //   distance: { type: String },
-    //   district: { type: String },
-    //   civilStatus: { type: String },
-    //   gender: { type: String },
-
-    //   health: {
-    //     chronicDisease: { type: String },
-    //     surgery: { type: String },
-    //   },
-
-    //   dependency: {
-    //     disabledDependent: { type: String },
-    //     elderlyDependent: { type: String },
-    //     elderlyDependentspecialNeedDisease: { type: String },
-    //   },
-      
-    //   periodOfWork: { type: String },
-    //   complaints: { type: String },
-    
-    //   adHocNeeds: { 
-    //     pregnancyWithDisease: { type: String },
-    //     pregnancy: { type: String },
-    //     elderlyDependentspecialNeedDisease: { type: String },
-    //    },
-
-    //   priorTransfers: { type: String },
-
-    //   residentDistance: { type: String },
-    //   residentDistance: { type: String },
-    //   petitionStatus: { type: String },
-
-    //   disease: { type: String },
-    //   softWorkRecommendation: { type: String },
-    //   medicalCondition: { type: String },
-    //   disability: { type: String },
-    //   disabilityLevel: { type: String },
-    // },
-
-    
     transferDecision: { type: String },
     transferDecisionType: { type: String },
     transfered_workplace_id: {

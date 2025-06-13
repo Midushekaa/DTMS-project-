@@ -8,26 +8,26 @@ const Home = lazy(() => import("../views/appViews/Home"));
 const Register = lazy(() => import("../views/authViews/Register"));
 const Login = lazy(() => import("../views/authViews/Login"));
 const AdminLogin = lazy(() => import("../views/authViews/AdminLogin"));
-const Dashboard = lazy(() => import("../views/appViews/Dashboard"));
-const AdminDashboard = lazy(() => import("../views/appViews/AdminDashboard"));
-const UpdateProfile = lazy(() => import("../views/appViews/UpdateProfile"));
+const Dashboard = lazy(() => import("../views/appViews/admin/Dashboard"));
+const AdminDashboard = lazy(() => import("../views/appViews/admin/AdminDashboard"));
+const UpdateProfile = lazy(() => import("../views/appViews/user/UpdateProfile"));
 const UserViewProfile = lazy(() =>
-  import("../views/appViews/UserViewProfile")
+  import("../views/appViews/admin/UserViewProfile")
 );
-const Cadre = lazy(() => import("../components/admin/Cadre"));
-const UserManagement = lazy(() => import("../components/admin/UserManagement"));
-const Test = lazy(() => import("../views/Test"));
-const NotFound = lazy(() => import("../views/NotFound"));
-const About = lazy(() => import("../views/About"));
+const Cadre = lazy(() => import("../views/appViews/admin/Cadre"));
+const UserManagement = lazy(() => import("../views/appViews/admin/UserManagement"));
+const Test = lazy(() => import("../views/appViews/Test"));
+const NotFound = lazy(() => import("../views/appViews/NotFound"));
+const About = lazy(() => import("../views/appViews/About"));
 const AdminManagement = lazy(() =>
-  import("../components/admin/AdminManagement")
+  import("../views/appViews/admin/AdminManagement")
 );
-const TransferWindow = lazy(() => import("../components/admin/TransferWindow"));
-const TransferApplication = lazy(() => import("../components/user/TransferApplication"));
-const MyApplications = lazy(() => import("../components/user/MyApplications"));
-const TransferApplications =lazy(() => import ("../components/admin/TransferApplications"));
-const NotAppliedUsers =lazy(() => import ("../components/admin/NotAppliedUsers"));
+const TransferWindow = lazy(() => import("../views/appViews/admin/TransferWindow"));
+const TransferApplications =lazy(() => import ("../views/appViews/admin/TransferApplications"));
+const NotAppliedUsers =lazy(() => import ("../views/appViews/admin/NotAppliedUsers"));
 
+const TransferApplication = lazy(() => import("../views/appViews/user/TransferApplication"));
+const MyApplications = lazy(() => import("../views/appViews/user/MyApplications"));
 
 const userRoutes = [
   { path: "/dashboard", element: <Dashboard /> },

@@ -23,7 +23,7 @@ const getTotalSubmitedTransferApplications = async (req, res) => {
     }
 
     const totalTransferApplications = await TransferApplication.find(filter)
-      .populate("userId", "nameWithInitial designation duty_assumed_date")
+      .populate("userId", "nameWithInitial designation dateOfBirth")
       .populate({
         path: "Replacement_userId",
         select: "nameWithInitial designation NIC",
