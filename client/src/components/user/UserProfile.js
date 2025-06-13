@@ -233,7 +233,7 @@ const handleLocationClick = () => {
 
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
           <Form.Item
-            label="Duty Assumed Date"
+            label="Duty Assumed Date at Current Workplace"
             name="duty_assumed_date"
             style={{ flex: "1 1 48%" }}
           >

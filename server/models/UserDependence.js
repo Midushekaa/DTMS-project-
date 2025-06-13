@@ -5,15 +5,15 @@ const UserDependenceSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "User ID is required"], // Custom message
+      required: [true, "User ID is required"],
     },
     dependentName: {
       type: String,
-      required: [true, "Dependent name is required"], // Custom message
+      required: [true, "Dependent name is required"],
     },
     dependentRelationship: {
       type: String,
-      required: [true, "Dependent relationship is required"], // Custom message
+      required: [true, "Dependent relationship is required"], 
     },
     dependentNIC: {
       type: String,
@@ -25,16 +25,16 @@ const UserDependenceSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      required: [true, "Gender is required"], // Custom message
+      required: [true, "Gender is required"], 
     },
     categoryOfDependency: {
       type: String,
-      required: [true, "Nature dependency is required"], // Custom message
+      required: [true, "Category of dependency is required"],
     },
 
     dependent_DOB: {
       type: Date,
-      required: [true, "Dependent Date of Birth is required"], // Custom message
+      required: [true, "Dependent Date of Birth is required"], 
     },
     school: {
       type: String,
@@ -54,7 +54,7 @@ const UserDependenceSchema = new mongoose.Schema(
     disease_type: {
       type: String,
     },
-      nature_of_dependent: {
+    nature_of_dependent: {
       type: String,
     },
     Does_this_dependent_currently_undergo_any_treatment: {

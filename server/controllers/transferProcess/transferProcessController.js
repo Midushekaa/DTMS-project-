@@ -36,8 +36,9 @@ exports.transferProcess = async (req, res) => {
     const disease = await UserDisease.findOne({ userId });
     const disability = await UserDisability.findOne({ userId });
     const medicalCondition = await UserMedicalCondition.findOne({ userId });
-    const workhistory = await UserWorkHistory.findOne({ userId });
     const pettision = await UserPettion.findOne({ userId });
+    const workhistory = await UserWorkHistory.findOne({ userId });
+    const workplace = await Workplace.findById(user?.workplace_id);
 
     const workplaces = await Promise.all([
       Workplace.findById(transferApplication.preferWorkplace_1),
@@ -52,14 +53,15 @@ exports.transferProcess = async (req, res) => {
       });
     }
 
-    const score = generateScore(
+    const { totalScore, scoreBreakdown } = generateScore(
       user,
       dependence,
       disease,
       disability,
       medicalCondition,
+      pettision,
       workhistory,
-      pettision
+      workplace
     );
 
     const categorizedWorkplaces = await calculateWorkplaceDistance(
@@ -70,13 +72,13 @@ exports.transferProcess = async (req, res) => {
     let transferWorkplaceId = null;
     let workplaceCategory = "";
 
-    if (score < 100) {
+    if (totalScore < 100) {
       const difficult = categorizedWorkplaces.find(
         (wp) => wp.category === "Difficult"
       );
       transferWorkplaceId = difficult?.workplace_id;
       workplaceCategory = "Difficult";
-    } else if (score >= 100 && score <= 160) {
+    } else if (totalScore >= 100 && totalScore <= 160) {
       const moderate = categorizedWorkplaces.find(
         (wp) => wp.category === "Moderate"
       );
@@ -89,13 +91,35 @@ exports.transferProcess = async (req, res) => {
       transferWorkplaceId = prefered?.workplace_id;
       workplaceCategory = "Prefered";
     }
+    transferApplication.score = {
+      totalScore: totalScore,
+      distance: scoreBreakdown.distance || "",
+      workedOuterDistrict: scoreBreakdown.workedOuterDistrict || "",
+      favourableStationOuterDistrict:
+        scoreBreakdown.favourableStationOuterDistrict || "",
+      marriedWithYoungChild: scoreBreakdown.marriedWithYoungChild || "",
+      marriedWithOlderChild: scoreBreakdown.marriedWithOlderChild || "",
+      gender: scoreBreakdown.gender || "",
+      disease: scoreBreakdown.disease || "",
+      majorSurgery: scoreBreakdown.majorSurgery || "",
+      disabledDependent: scoreBreakdown.disabledDependent || "",
+      elderlyDependent: scoreBreakdown.elderlyDependent || "",
+      dutyDuration: scoreBreakdown.dutyDuration || "",
+      pettisionFromPeoplesRepresentatives:
+        scoreBreakdown.pettisionFromPeoplesRepresentatives || "",
+      pettisionFromPublic: scoreBreakdown.pettisionFromPublic || "",
+      pettisionFromSuperiorOfficials:
+        scoreBreakdown.pettisionFromSuperiorOfficials || "",
+      pregnancyWithDisease: scoreBreakdown.pregnancyWithDisease || "",
+      higherPregnancyPeriod: scoreBreakdown.higherPregnancyPeriod || "",
+      lactatingMother: scoreBreakdown.lactatingMother || "",
+      metOnAccident: scoreBreakdown.metOnAccident || "",
+      fertilityTreatment: scoreBreakdown.fertilityTreatment || "",
+      error: scoreBreakdown.error || "",
+    };
 
-    const transferDecision = "Processed";
-    const isProcessed = true;
-
-    transferApplication.score = score;
-    transferApplication.isProcessed = isProcessed;
-    transferApplication.transferDecision = transferDecision;
+    transferApplication.isProcessed = false;
+    transferApplication.transferDecision = "Processed";
     transferApplication.transferDecisionType = workplaceCategory;
     transferApplication.transfered_workplace_id = transferWorkplaceId;
 
@@ -105,9 +129,9 @@ exports.transferProcess = async (req, res) => {
       success: true,
       data: {
         userId,
-        isProcessed,
-        transferDecision,
-        score,
+        isProcessed: true,
+        transferDecision: "Processed",
+        score: totalScore,
         transfered_workplace_id: transferWorkplaceId,
         transferDecisionType: workplaceCategory,
         categorizedWorkplaces,

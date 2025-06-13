@@ -164,6 +164,7 @@ const Petitions = ({ userId }) => {
                   <Option value="From Divitional Secretariat">
                     From Divitional Secretariat
                   </Option>
+                  <Option value="Peoples Representatives">Peoples Representatives</Option>
                   <Option value="Other">Other</Option>
                 </Select>
               </Form.Item>

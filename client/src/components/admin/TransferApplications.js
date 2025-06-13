@@ -18,10 +18,10 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import ScoreDetailsModal  from "./ScoreDetailsModal";
+import dayjs from "dayjs";
 
-// Render Status function with debugging logs
 const renderStatus = (application) => {
-
   return (
     <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
       <Tooltip title="Checked">
@@ -92,101 +92,9 @@ const TransferApplications = ({ record }) => {
     setSelectedId(null);
   };
 
-  // useEffect(() => {
-  //   const fetchTransferWindows = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_URL}/transfer-window`
-  //       );
-  //       setTransferWindows(response.data); // Now this is an array of windows
-  //     } catch (error) {
-  //       console.error("Error fetching transfer windows:", error);
-  //     }
-  //   };
-
-  //   fetchTransferWindows();
-  // }, []);
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem("adminToken");
-
-  //   if (!token || token.split(".").length !== 3) {
-  //     localStorage.removeItem("adminToken");
-  //     navigate("/admin_login");
-  //     return;
-  //   }
-  //   const fetchCadres = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_URL}/admin/cadre`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //       setCadres(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching transfer windows:", error);
-  //     }
-  //   };
-
-  //   fetchCadres();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchWorkplaces = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_URL}/workplace`
-  //       );
-  //       setWorkplaceData(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching workplaces:", error);
-  //     }
-  //   };
-
-  //   fetchWorkplaces();
-  // }, []);
-
-  // // Fetch the transfer applications data
-  // useEffect(() => {
-  //   const token = localStorage.getItem("adminToken");
-
-  //   if (!token) {
-  //     message.error("Unauthorized! Please log in as an admin.");
-  //     return;
-  //   }
-
-  //   const fetchApplications = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_URL}/admin/total-applications`,
-  //         { headers: { Authorization: `Bearer ${token}` } }
-  //       );
-
-  //       if (response.data && response.data.length > 0) {
-  //         setApplications(response.data);
-  //       } else {
-  //         message.info("No transfer applications found.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Fetch Error:", error.response?.data || error);
-  //       message.error(
-  //         error.response?.data?.error || "Something went wrong, try again later"
-  //       );
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchApplications();
-  // }, []);
-
- const fetch = async () => {
+  const fetch = async () => {
     const token = localStorage.getItem("adminToken");
-    
+
     if (!token || token.split(".").length !== 3) {
       localStorage.removeItem("adminToken");
       navigate("/admin_login");
@@ -198,12 +106,12 @@ const TransferApplications = ({ record }) => {
       const [windows, cadres, workplaces, applications] = await Promise.all([
         axios.get(`${process.env.REACT_APP_API_URL}/transfer-window`),
         axios.get(`${process.env.REACT_APP_API_URL}/admin/cadre`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get(`${process.env.REACT_APP_API_URL}/workplace`),
         axios.get(`${process.env.REACT_APP_API_URL}/admin/total-applications`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
+          headers: { Authorization: `Bearer ${token}` },
+        }),
       ]);
 
       setTransferWindows(windows.data);
@@ -221,40 +129,31 @@ const TransferApplications = ({ record }) => {
       setLoading(false);
     }
   };
-  
+
   const fetchAllData = () => {
-  fetch();
-  }
+    fetch();
+  };
 
   useEffect(() => {
-  fetchAllData();
-}, []);
+    fetchAllData();
+  }, []);
+  
+const calculateEligibility = (DOB) => {
+  if (!DOB) return { years: 0, replacementStatus: "No" };
 
-  const calculateEligibility = (duty_assumed_date) => {
-    if (!duty_assumed_date)
-      return { yearsDifference: 0, replacementStatus: "No" };
+  const today = dayjs();
+  const birthDate = dayjs(DOB);
 
-    const currentDate = new Date();
-    const dutyDateObj = new Date(duty_assumed_date);
+  const years = today.diff(birthDate, "year");
+  const replacementStatus = years <= 58 ? "Yes" : "No";
+  
+  return { years, replacementStatus };
+};
 
-    let yearsDifference = currentDate.getFullYear() - dutyDateObj.getFullYear();
-
-    const isBeforeAnniversary =
-      currentDate.getMonth() < dutyDateObj.getMonth() ||
-      (currentDate.getMonth() === dutyDateObj.getMonth() &&
-        currentDate.getDate() < dutyDateObj.getDate());
-
-    if (isBeforeAnniversary) yearsDifference--;
-
-    const replacementStatus = yearsDifference >= 3 ? "Yes" : "No";
-
-    return { yearsDifference, replacementStatus };
-  };
   const getCadreDetails = (workplaceId, designation) => {
     const match = cadres.find(
       (item) =>
-        item.workplace_id === workplaceId &&
-        item.designation === designation
+        item.workplace_id === workplaceId && item.designation === designation
     );
 
     if (match) {
@@ -266,44 +165,46 @@ const TransferApplications = ({ record }) => {
     return null;
   };
 
-const update = async (id, userId, actionType, workplaceId, designation) => {
-  let cadre;
-  if (actionType === "publish") {
-    cadre = getCadreDetails(workplaceId, designation);
-    if (!cadre) return;
-  }
+  const update = async (id, userId, actionType, workplaceId, designation) => {
+    let cadre;
+    if (actionType === "publish") {
+      cadre = getCadreDetails(workplaceId, designation);
+      if (!cadre) return;
+    }
 
-  Modal.confirm({
-    title: actionType === "publish" ? "Confirm Publish" : "Confirm Action",
-    content: actionType === "publish" 
-      ? `Approved Cadre: ${cadre.approvedCadre}, Existing Cadre: ${cadre.existingCadre}` 
-      : "Are you sure you want to proceed?",
-    onOk: async () => {
-      setLoading(true);
-      try {
-        await axios.put(
-          `${process.env.REACT_APP_API_URL}/admin/transfer-application/${actionType}/${userId}`,
-           { id }  
-        );
-        const msg = {
-          process: "Processed successfully",
-          find: "Replacement officer found successfully",
-          publish: "Transfer application published successfully",
-        }[actionType] || "Action completed";
-        notification.success({ description: msg, placement: "topRight" });
-        fetchAllData();
-      } catch (error) {
-        notification.warning({
-          description: error.response?.data?.error || "Action failed",
-          placement: "topRight",
-        });
-      } finally {
-        setLoading(false);
-      }
-    },
-    onCancel: () => message.info("Action cancelled"),
-  });
-};
+    Modal.confirm({
+      title: actionType === "publish" ? "Confirm Publish" : "Confirm Action",
+      content:
+        actionType === "publish"
+          ? `Approved Cadre: ${cadre.approvedCadre}, Existing Cadre: ${cadre.existingCadre}`
+          : "Are you sure you want to proceed?",
+      onOk: async () => {
+        setLoading(true);
+        try {
+          await axios.put(
+            `${process.env.REACT_APP_API_URL}/admin/transfer-application/${actionType}/${userId}`,
+            { id }
+          );
+          const msg =
+            {
+              process: "Processed successfully",
+              find: "Replacement officer found successfully",
+              publish: "Transfer application published successfully",
+            }[actionType] || "Action completed";
+          notification.success({ description: msg, placement: "topRight" });
+          fetchAllData();
+        } catch (error) {
+          notification.warning({
+            description: error.response?.data?.error || "Action failed",
+            placement: "topRight",
+          });
+        } finally {
+          setLoading(false);
+        }
+      },
+      onCancel: () => message.info("Action cancelled"),
+    });
+  };
 
   const updateTransferredWorkplace = (id, newWorkplaceId) => {
     Modal.confirm({
@@ -400,11 +301,11 @@ const update = async (id, userId, actionType, workplaceId, designation) => {
     },
 
     {
-      title: "Eligibility (more than 3 years)",
-      key: "eligibility",
+      title: "Age over 58 years",
+      key: "eligibilityAge",
       render: (text, record) => {
-        const dutyDate = record.userId?.duty_assumed_date;
-        const { replacementStatus } = calculateEligibility(dutyDate);
+        const DOB = record.userId?.dateOfBirth;
+        const { replacementStatus } = calculateEligibility(DOB);
         return <span>{replacementStatus}</span>;
       },
     },
@@ -423,35 +324,38 @@ const update = async (id, userId, actionType, workplaceId, designation) => {
       key: "status",
       render: (text, record) => renderStatus(record),
     },
-
-    {
-      title: "Score",
-      dataIndex: "score",
-      key: "score",
-      // render: (text, record) => {
-      //   if (!text || !text.totalScore) return "N/A";
-      //   return (
-      //     <button
-      //       style={{
-      //         background: "none",
-      //         border: "none",
-      //         color: "#1890ff",
-      //         cursor: "pointer",
-      //         padding: 0,
-      //         textDecoration: "underline",
-      //       }}
-      //       onClick={() => showScoreModal(text, record._id)}
-      //     >
-      //       {text.totalScore}
-      //     </button>
-      //   );
-      // },
-    },
+  ...(adminRole === "superAdmin"
+  ? [
+      {
+        title: "Score",
+        dataIndex: "score",
+        key: "score",
+        render: (text, record) => {
+          if (!text || !text.totalScore) return "N/A";
+          return (
+            <button
+              style={{
+                background: "none",
+                border: "none",
+                color: "#1890ff",
+                cursor: "pointer",
+                padding: 0,
+                textDecoration: "underline",
+              }}
+              onClick={() => showScoreModal(text, record._id)}
+            >
+              {text.totalScore}
+            </button>
+          );
+        },
+      },
+    ]
+  : []),
     {
       title: "Transfer Decision",
       dataIndex: "transferDecision",
       key: "transferDecision",
-       render: (text) => {
+      render: (text) => {
         return text && text.trim() !== "" ? text : "N/A";
       },
     },
@@ -522,7 +426,9 @@ const update = async (id, userId, actionType, workplaceId, designation) => {
                   <Button
                     type="primary"
                     icon={<CheckCircleOutlined />}
-                    onClick={() => update(record._id,record.userId._id, "process")}
+                    onClick={() =>
+                      update(record._id, record.userId._id, "process")
+                    }
                   >
                     Process
                   </Button>
@@ -543,7 +449,9 @@ const update = async (id, userId, actionType, workplaceId, designation) => {
                     <Button
                       type="dashed"
                       icon={<UserSwitchOutlined />}
-                      onClick={() => update(record._id,record.userId._id, "find")}
+                      onClick={() =>
+                        update(record._id, record.userId._id, "find")
+                      }
                     >
                       Find Replacement
                     </Button>
@@ -617,169 +525,11 @@ const update = async (id, userId, actionType, workplaceId, designation) => {
         pagination={{ pageSize: 10 }}
         scroll={{ x: "max-content" }}
       />
-      <Modal
-        title={<span className="text-lg font-semibold">Score Details</span>}
-        open={isModalVisible}
-        onCancel={handleCloseModal}
-        footer={null}
-        width={800}
-        className="[&_.ant-modal-body]:p-6"
-      >
-        <div className="overflow-auto">
-          <table className="w-full text-left">
-            <tbody className="divide-y divide-gray-200">
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700 w-1/3">
-                  Total Score
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.totalScore || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Duty Years
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.dutyYears || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">Age</td>
-                <td className="py-3 px-4">{selectedScore?.age || "N/A"}</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Outer District
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.outerDistrict || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Resident Distance
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.residentDistance || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Civil Status
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.civilStatus || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">Gender</td>
-                <td className="py-3 px-4">{selectedScore?.gender || "N/A"}</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Petition Status
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.petitionStatus || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Dependency - Infant
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.dependency?.infant || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Dependency - School Child
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.dependency?.schoolChild || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Dependency - Breastfeeding
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.dependency?.breastfeeding || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Dependency - Special Need
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.dependency?.specialNeed || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Dependency - Chronic Disease
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.dependency?.chronicDisease || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Dependency - Elderly Dependent
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.dependency?.elderlyDependent || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Dependency - Disabled Dependent
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.dependency?.disabledDependent || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">Disease</td>
-                <td className="py-3 px-4">{selectedScore?.disease || "N/A"}</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Soft Work Recommendation
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.softWorkRecommendation || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Medical Condition
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.medicalCondition || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Disability
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.disability || "N/A"}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-medium text-gray-700">
-                  Disability Level
-                </td>
-                <td className="py-3 px-4">
-                  {selectedScore?.disabilityLevel || "N/A"}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </Modal>
+      <ScoreDetailsModal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+        scoreData={selectedScore}
+      />
     </div>
   );
 };
