@@ -46,7 +46,7 @@ const UpdateProfile = () => {
         ),
       },
       {
-        key: "WorkHistory",
+        key: "ServiceHistory",
         label: "Service History",
         icon: user?.isWorkHistorySubmited ? (
           <CheckCircleOutlined style={{ color: "green" }} />
@@ -116,7 +116,7 @@ const UpdateProfile = () => {
     const content = (
       <div style={{ position: "relative" }}>
         {currentSection === "BasicDetails" && <UserProfile user={user} />}
-        {currentSection === "WorkHistory" && <UserWorkHistory user={user} />}
+        {currentSection === "ServiceHistory" && <UserWorkHistory user={user} />}
         {currentSection === "LeaveDetails" && <LeaveDetails user={user} />}
         {currentSection === "Dependency" && <UserDependence user={user} />}
         {currentSection === "Disease" && <UserDisease user={user} />}
@@ -281,7 +281,7 @@ const UpdateProfile = () => {
             }}
             message={
               user.isApproved
-                ? "Profile verified"
+                ? "Profile verified successfully"
                 : user.isRejected
                 ? "Your profile rejected, please resubmit"
                 : user.isSubmited

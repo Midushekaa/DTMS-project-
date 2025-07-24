@@ -437,7 +437,7 @@ const Dependence = ({ user }) => {
                         style={{ flex: "1 1 48%" }}
                       >
                         <Select>
-                          <Option value="Bedridden">Hearing</Option>
+                          <Option value="Bedridden">Bedridden</Option>
                           <Option value="Require assistance for daily tasks">
                             Require assistance for daily tasks
                           </Option>
@@ -616,6 +616,7 @@ const Dependence = ({ user }) => {
                 label="Does this dependent currently live with you?"
                 name="live_with_dependant"
                 style={{ flex: "1 1 48%" }}
+                rules={[{ required: true, message: "This field is required" }]}
               >
                 <Select>
                   <Option value="true">Yes</Option>

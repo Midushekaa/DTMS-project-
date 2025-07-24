@@ -41,6 +41,8 @@ const UserSchema = new mongoose.Schema(
     isApproved: { type: Boolean, default: false }, // isApproved status
     isRejected: { type: Boolean, default: false }, // isRejected status
     rejectReason: { type: String, default: null },
+    isApplicationRemoved: { type: Boolean, default: false }, // isRejected status
+    applicationRemovedReason: { type: String, default: null },
 
     // new fields for the five collections
     isMedicalConditionSubmited: { type: Boolean, default: false },

@@ -9,6 +9,7 @@ import {
   Typography,
   Select,
   Modal,
+  Space
 } from "antd";
 import axios from "axios";
 import useCheckAdminAuth from "../../../utils/checkAdminAuth";
@@ -20,6 +21,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import ScoreDetailsModal from "../../../components/admin/ScoreDetailsModal";
 import dayjs from "dayjs";
+import RemoveButton from '../../../components/admin/RemoveButton';
 
 const renderStatus = (application) => {
   return (
@@ -433,6 +435,7 @@ const TransferApplications = ({ record }) => {
                     Process
                   </Button>
                 ) : !record.isApproved || record.isRejected ? (
+                  <Space>
                   <Button
                     type="primary"
                     icon={<CheckCircleOutlined />}
@@ -440,6 +443,8 @@ const TransferApplications = ({ record }) => {
                   >
                     Approval Pending
                   </Button>
+                   <RemoveButton record={record}/>
+                  </Space>
                 ) : null}
 
                 {record.Replacement &&

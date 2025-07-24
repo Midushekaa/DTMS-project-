@@ -167,7 +167,7 @@ function generateScore(
       score += 20;
       scoreBreakdown.fertilityTreatment = "Need of fertility treatment : 20 points";
     }
-      console.log(score);
+      // console.log(score);
 
     
   } catch (err) {

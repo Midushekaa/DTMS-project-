@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
-  Layout,
   Row,
   Col,
   Card,
@@ -22,7 +21,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useUserData from "../../../api/useUserData";
 
-const { Content } = Layout;
 const { Title, Text } = Typography;
 
 const Dashboard = () => {
@@ -86,7 +84,7 @@ const Dashboard = () => {
               boxShadow: "0 8px 16px rgba(0, 0, 0, 0.05)",
             }}
           >
-            <div
+               <div
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -104,13 +102,22 @@ const Dashboard = () => {
                 {user ? user.nameWithInitial.charAt(0) : "U"}
               </Avatar>
               <div>
-                <Title level={3} style={{ margin: 0 }}>
+                <Title
+                  level={3}
+                >
                   {user ? user.nameWithInitial : "Welcome, User!"}
                 </Title>
                 <Text type="secondary">{user?.contactNumber || "User"}</Text>
+                {(user?.isApplicationRemoved ) && user?.applicationRemovedReason && (
+                  <Text
+                    type="danger"
+                    style={{ display: "block", marginTop: 8 }}
+                  >
+                    Application Rejected : {user.applicationRemovedReason}
+                  </Text>
+                )}
               </div>
             </div>
-
             <Divider style={{ margin: "16px 0" }} />
 
             <Descriptions column={1} size="middle">

@@ -131,6 +131,8 @@ const LeaveDetails = ({ user }) => {
     },
   ];
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <div style={{ maxWidth: 1200, margin: "auto", padding: 30 }}>
       <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -140,18 +142,21 @@ const LeaveDetails = ({ user }) => {
               <Form.Item
                 label="Year"
                 name="year"
-                style={{ flex: "1 1 48%", marginBottom: "16px" }} // Adjust width and margin for proper alignment
+                style={{ flex: "1 1 48%", marginBottom: "16px" }} 
                 rules={[{ required: true, message: "This field is required" }]}
               >
                 <Select>
-                  {Array.from({ length: 2025 - 2019 }, (_, index) => {
-                    const year = 2025 - index; // Starting from 2025 and decreasing
-                    return (
-                      <Option key={year} value={year}>
-                        {year}
-                      </Option>
-                    );
-                  })}
+                  {Array.from(
+                    { length: currentYear - 2020 + 1 },
+                    (_, index) => {
+                      const year = currentYear - index;
+                      return (
+                        <Option key={year} value={year}>
+                          {year}
+                        </Option>
+                      );
+                    }
+                  )}
                 </Select>
               </Form.Item>
 

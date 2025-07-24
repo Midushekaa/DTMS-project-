@@ -240,9 +240,9 @@ const UserWorkHistory = ({ user }) => {
                 <Select onChange={handleNatureOfDutyChange}>
                   <Option value="Temporary">Temporary</Option>
                   <Option value="Contract Basis">Contract Basis</Option>
-                  <Option value="Appointed">Appointed</Option>
+                  <Option value="Permanent Pentionable">Permanent Pentionable</Option>
                   <Option value="Transferred">Transferred</Option>
-                  <Option value="Adhoc">Adhoc</Option>
+                  <Option value="Adhoc / Casual">Adhoc / Casual</Option>
                   <Option value="Other">Other</Option>
                 </Select>
               </Form.Item>

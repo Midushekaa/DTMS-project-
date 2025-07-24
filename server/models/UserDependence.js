@@ -68,6 +68,7 @@ const UserDependenceSchema = new mongoose.Schema(
     },
     live_with_dependant: {
       type: Boolean,
+      required: [true, "Live with dependant is required"], 
     },
   },
   { timestamps: true }

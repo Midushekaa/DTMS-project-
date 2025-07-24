@@ -6,7 +6,8 @@ import {
   UserOutlined,
   DollarOutlined,
   TransactionOutlined,
-  TeamOutlined
+  TeamOutlined,
+  FileOutlined
 } from '@ant-design/icons';
 
 export default function SuperAdmin() {
@@ -78,15 +79,14 @@ export default function SuperAdmin() {
               value={112893}
               precision={2}
               valueStyle={{ color: '#3f8600' }}
-              prefix={<DollarOutlined />}
-              suffix="USD"
+              prefix={<FileOutlined />}
             />
           </Card>
         </Col>
         <Col span={6}>
           <Card>
             <Statistic
-              title="Beneficiaries"
+              title="Employees"
               value={24567}
               valueStyle={{ color: '#3f8600' }}
               prefix={<TeamOutlined />}
@@ -101,7 +101,6 @@ export default function SuperAdmin() {
               precision={2}
               valueStyle={{ color: '#3f8600' }}
               prefix={<ArrowUpOutlined />}
-              suffix="USD"
             />
           </Card>
         </Col>
@@ -111,7 +110,6 @@ export default function SuperAdmin() {
               title="Pending Approvals"
               value={27}
               valueStyle={{ color: '#cf1322' }}
-              prefix={<TransactionOutlined />}
             />
           </Card>
         </Col>

@@ -224,7 +224,6 @@ const UserProfile = ({ user }) => {
             style={{ flex: "1 1 48%" }}
           >
             <Select placeholder="Select a designation">
-              <Option value="Engineer">Engineer</Option>
               <Option value="DP/DDP/ADP">DP/DDP/ADP</Option>
               <Option value="Development Officer (Public Administration)">
                 Development Officer (Public Administration)
@@ -282,7 +281,7 @@ const UserProfile = ({ user }) => {
               <Option value="Sri Lanka Administrative Service">
                 Sri Lanka Administrative Service
               </Option>
-              <Option value="Sri Lanka Administrative Service">
+              <Option value="Management Service officers">
                 Management Service officers
               </Option>
               <Option value="Sri Lanka Information & Communication Technology Service">

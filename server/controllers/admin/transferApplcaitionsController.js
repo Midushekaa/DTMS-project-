@@ -54,7 +54,7 @@ const getNotAppliedUsers = async (req, res) => {
 
     const activeTransferWindow = await TransferWindow.findOne({
       closingDate: { $gte: currentDate },
-      applicationClosingDate: { $gte: currentDate },
+      // applicationClosingDate: { $gte: currentDate },
     });
 
     if (!activeTransferWindow) {
@@ -359,8 +359,8 @@ const rejectTransferApplication = async (req, res) => {
       id,
       {
         isSubmited: true,
-        isChecked: false,
-        isRecommended: false,
+        isChecked: true,
+        isRecommended: true,
         isApproved: false,
         isRejected: true,
       },
@@ -384,6 +384,7 @@ const rejectTransferApplication = async (req, res) => {
 
 const removeTransferApplication = async (req, res) => {
   const { id } = req.params;
+  const { reason } = req.body;
 
   try {
     const transferApplication = await TransferApplication.findByIdAndDelete(id);
@@ -394,6 +395,11 @@ const removeTransferApplication = async (req, res) => {
         .json({ message: "Transfer application not found" });
     }
 
+    await User.findByIdAndUpdate(transferApplication?.userId, {
+      applicationRemovedReason: reason,
+      isApplicationRemoved: true
+    });
+
     res.status(200).json({
       message: "Transfer application removed successfully",
     });
@@ -403,6 +409,7 @@ const removeTransferApplication = async (req, res) => {
       .json({ error: "Something went wrong. Please try again later" });
   }
 };
+
 
 module.exports = {
   getTotalSubmitedTransferApplications,

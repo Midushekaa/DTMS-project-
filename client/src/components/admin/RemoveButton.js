@@ -1,11 +1,22 @@
-import { Button, message, notification } from "antd";
+import { Button, message, notification, Modal, Input } from "antd";
 import axios from "axios";
 import { useState } from "react";
 
-const RemoveButton = ({ record,fetchPendingApplications,setPendingApplications,setErrorMessage }) => {
+const RemoveButton = ({ record }) => {
   const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [reason, setReason] = useState("");
 
-  const handleReject = async () => {
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleOk = async () => {
+    if (!reason.trim()) {
+      message.warning("Please provide a reason.");
+      return;
+    }
+
     setLoading(true);
     try {
       const token = localStorage.getItem("adminToken");
@@ -19,7 +30,7 @@ const RemoveButton = ({ record,fetchPendingApplications,setPendingApplications,s
 
       const response = await axios.put(
         url,
-        {},
+        { reason },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -32,14 +43,13 @@ const RemoveButton = ({ record,fetchPendingApplications,setPendingApplications,s
           description: response.data.message || "Application rejected",
           placement: "topRight",
         });
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } else {
         message.error("Unexpected server response");
       }
     } catch (error) {
-      console.error(error.response?.data?.error || "Something went wrong");
       notification.error({
         description:
           error?.response?.data?.error ||
@@ -48,13 +58,39 @@ const RemoveButton = ({ record,fetchPendingApplications,setPendingApplications,s
       });
     } finally {
       setLoading(false);
+      setVisible(false);
+      setReason("");
     }
   };
 
+  const handleCancel = () => {
+    setVisible(false);
+    setReason("");
+  };
+
   return (
-    <Button type="primary" danger loading={loading} onClick={handleReject}>
-      Remove
-    </Button>
+    <>
+      <Button type="primary" danger onClick={showModal} loading={loading}>
+        Remove
+      </Button>
+
+      <Modal
+        title="Reason for Rejection"
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+        confirmLoading={loading}
+      >
+        <Input.TextArea
+          rows={4}
+          placeholder="Enter rejection reason"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
+      </Modal>
+    </>
   );
 };
 
